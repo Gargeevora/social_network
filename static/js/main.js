@@ -26,3 +26,21 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
+
+
+// Hamburger menu
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+
+if (hamburgerBtn && mobileMenu) {
+    hamburgerBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        mobileMenu.classList.toggle('open');
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.mobile-menu') && !e.target.closest('.hamburger-btn')) {
+            mobileMenu.classList.remove('open');
+        }
+    });
+}

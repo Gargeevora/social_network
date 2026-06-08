@@ -3295,3 +3295,60 @@ input[type="file"] {
         padding: 0.3rem;
     }
 }
+
+/* ---- HAMBURGER MENU ---- */
+.hamburger-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--white);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.3rem;
+}
+
+.mobile-menu {
+    display: none;
+    position: fixed;
+    top: 65px;
+    left: 0;
+    width: 100%;
+    background: var(--navy);
+    z-index: 99;
+    flex-direction: column;
+    padding: 1rem 0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.mobile-menu a {
+    color: var(--grey);
+    text-decoration: none;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border-bottom: 1px solid var(--navy-light);
+    display: block;
+}
+
+.mobile-menu a:hover {
+    background: var(--navy-light);
+    color: var(--white);
+}
+
+.mobile-menu.open {
+    display: flex;
+}
+
+@media (max-width: 768px) {
+    .hamburger-btn {
+        display: block;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    .nav-right {
+        display: none;
+    }
+}

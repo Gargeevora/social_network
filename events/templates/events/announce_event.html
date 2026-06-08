@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block title %}Announce Event - Social Network{% endblock %}
+
+{% block content %}
+
+<div class="back-link">
+    <a href="{% url 'events:list' %}"><i class="fas fa-arrow-left"></i> Back to Events</a>
+</div>
+
+<div class="announce-container">
+
+    <div class="announce-header">
+        <div class="announce-icon">
+            <i class="fas fa-bullhorn"></i>
+        </div>
+        <div>
+            <h2>Announce an Event</h2>
+            <p class="subtitle">Share your college event with students across the network</p>
+        </div>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="id_event_name">Event Name</label>
+            <input
+                type="text"
+                name="event_name"
+                id="id_event_name"
+                placeholder="e.g. National Hackathon 2026"
+                value="{{ form.event_name.value|default:'' }}"
+                required
+            >
+            {% if form.event_name.errors %}
+            <span class="field-error">{{ form.event_name.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_about">About the Event</label>
+            <textarea
+                name="about"
+                id="id_about"
+                placeholder="Describe your event in detail..."
+                rows="4"
+                required
+            >{{ form.about.value|default:'' }}</textarea>
+            {% if form.about.errors %}
+            <span class="field-error">{{ form.about.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_cover_image">Event Cover Image / Poster</label>
+            <div class="cover-upload-area" id="coverUploadArea">
+                <i class="fas fa-image"></i>
+                <p>Click to upload event poster or cover image</p>
+                <small>JPG, PNG recommended</small>
+                <input
+                    type="file"
+                    name="cover_image"
+                    id="id_cover_image"
+                    accept="image/*"
+                    required
+                    onchange="previewCover(this)"
+                >
+            </div>
+            <img id="coverPreview" src="" alt="Cover Preview" style="display:none; width:100%; border-radius:10px; margin-top:0.8rem; max-height:250px; object-fit:cover;">
+            {% if form.cover_image.errors %}
+            <span class="field-error">{{ form.cover_image.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_place">Event Place</label>
+            <input
+                type="text"
+                name="place"
+                id="id_place"
+                placeholder="e.g. GSET College Auditorium, Ahmedabad"
+                value="{{ form.place.value|default:'' }}"
+                required
+            >
+            {% if form.place.errors %}
+            <span class="field-error">{{ form.place.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_event_date">Event Date</label>
+                <input
+                    type="date"
+                    name="event_date"
+                    id="id_event_date"
+                    value="{{ form.event_date.value|default:'' }}"
+                    required
+                >
+                {% if form.event_date.errors %}
+                <span class="field-error">{{ form.event_date.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_last_registration_date">Last Registration Date</label>
+                <input
+                    type="date"
+                    name="last_registration_date"
+                    id="id_last_registration_date"
+                    value="{{ form.last_registration_date.value|default:'' }}"
+                    required
+                >
+                {% if form.last_registration_date.errors %}
+                <span class="field-error">{{ form.last_registration_date.errors.0 }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_fees">Entry Fees (₹)</label>
+                <input
+                    type="number"
+                    name="fees"
+                    id="id_fees"
+                    placeholder="Enter 0 for free event"
+                    value="{{ form.fees.value|default:'0' }}"
+                    min="0"
+                    required
+                >
+                {% if form.fees.errors %}
+                <span class="field-error">{{ form.fees.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_contact_number">Contact Number for Queries</label>
+                <input
+                    type="tel"
+                    name="contact_number"
+                    id="id_contact_number"
+                    placeholder="Contact number"
+                    value="{{ form.contact_number.value|default:'' }}"
+                    required
+                >
+                {% if form.contact_number.errors %}
+                <span class="field-error">{{ form.contact_number.errors.0 }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="id_registration_link">Registration Link (optional)</label>
+            <input
+                type="url"
+                name="registration_link"
+                id="id_registration_link"
+                placeholder="https://forms.google.com/your-form"
+                value="{{ form.registration_link.value|default:'' }}"
+            >
+            {% if form.registration_link.errors %}
+            <span class="field-error">{{ form.registration_link.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn-primary">
+            <i class="fas fa-bullhorn"></i> Announce Event
+        </button>
+
+    </form>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function previewCover(input) {
+    const preview = document.getElementById('coverPreview');
+    const uploadArea = document.getElementById('coverUploadArea');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            uploadArea.style.borderColor = 'var(--accent)';
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+{% endblock %}

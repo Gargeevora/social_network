@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - Social Network{% endblock %}
+
+{% block content %}
+<div class="form-container" style="max-width: 600px;">
+    
+    <h2>Create Account</h2>
+    <p class="subtitle">Join Social Network — connect with students across colleges</p>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="id_student_name">Full Name</label>
+            <input 
+                type="text" 
+                name="student_name" 
+                id="id_student_name"
+                placeholder="Enter your full name"
+                value="{{ form.student_name.value|default:'' }}"
+                required
+            >
+            {% if form.student_name.errors %}
+            <span class="field-error">{{ form.student_name.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_email">Email Address</label>
+            <input 
+                type="email" 
+                name="email" 
+                id="id_email"
+                placeholder="Enter your college/personal email"
+                value="{{ form.email.value|default:'' }}"
+                required
+            >
+            {% if form.email.errors %}
+            <span class="field-error">{{ form.email.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_college_name">College Name</label>
+                <input 
+                    type="text" 
+                    name="college_name" 
+                    id="id_college_name"
+                    placeholder="Your college name"
+                    value="{{ form.college_name.value|default:'' }}"
+                    required
+                >
+                {% if form.college_name.errors %}
+                <span class="field-error">{{ form.college_name.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_branch">Branch</label>
+                <input 
+                    type="text" 
+                    name="branch" 
+                    id="id_branch"
+                    placeholder="e.g. Computer Science"
+                    value="{{ form.branch.value|default:'' }}"
+                    required
+                >
+                {% if form.branch.errors %}
+                <span class="field-error">{{ form.branch.errors.0 }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_year">Current Year</label>
+                <select name="year" id="id_year" required>
+                    <option value="">Select Year</option>
+                    <option value="1" {% if form.year.value == '1' %}selected{% endif %}>1st Year</option>
+                    <option value="2" {% if form.year.value == '2' %}selected{% endif %}>2nd Year</option>
+                    <option value="3" {% if form.year.value == '3' %}selected{% endif %}>3rd Year</option>
+                    <option value="4" {% if form.year.value == '4' %}selected{% endif %}>4th Year</option>
+                </select>
+                {% if form.year.errors %}
+                <span class="field-error">{{ form.year.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_city">Current City</label>
+                <input 
+                    type="text" 
+                    name="city" 
+                    id="id_city"
+                    placeholder="Your current city"
+                    value="{{ form.city.value|default:'' }}"
+                    required
+                >
+                {% if form.city.errors %}
+                <span class="field-error">{{ form.city.errors.0 }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="id_address">Address</label>
+            <textarea 
+                name="address" 
+                id="id_address"
+                placeholder="Your current address"
+                required
+            >{{ form.address.value|default:'' }}</textarea>
+            {% if form.address.errors %}
+            <span class="field-error">{{ form.address.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+         <div class="form-group">
+            <label for="id_phone_number">Phone Number</label>
+            <input
+                type="tel"
+                name="phone_number"
+                id="id_phone_number"
+                placeholder="Enter your phone number"
+                value="{{ form.phone_number.value|default:'' }}"
+                required
+            >
+            {% if form.phone_number.errors %}
+            <span class="field-error">{{ form.phone_number.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_id_card_photo">Student ID Card Photo</label>
+            <input 
+                type="file" 
+                name="id_card_photo" 
+                id="id_id_card_photo"
+                accept="image/*"
+            >
+            <small class="field-hint">Upload a clear photo of your college ID card</small>
+            {% if form.id_card_photo.errors %}
+            <span class="field-error">{{ form.id_card_photo.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_password1">Password</label>
+                <div class="password-wrapper">
+                    <input 
+                        type="password" 
+                        name="password1" 
+                        id="id_password1"
+                        placeholder="Create a password"
+                        required
+                    >
+                    <i class="fas fa-eye toggle-password" onclick="togglePassword('id_password1', this)"></i>
+                </div>
+                {% if form.password1.errors %}
+                <span class="field-error">{{ form.password1.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_password2">Confirm Password</label>
+                <div class="password-wrapper">
+                    <input 
+                        type="password" 
+                        name="password2" 
+                        id="id_password2"
+                        placeholder="Confirm your password"
+                        required
+                    >
+                    <i class="fas fa-eye toggle-password" onclick="togglePassword('id_password2', this)"></i>
+                </div>
+                {% if form.password2.errors %}
+                <span class="field-error">{{ form.password2.errors.0 }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <button type="submit" class="btn-primary">
+            <i class="fas fa-user-plus"></i> Create Account
+        </button>
+    </form>
+
+    <div class="form-footer">
+        <p>Already have an account? <a href="{% url 'accounts:login' %}">Login here</a></p>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function togglePassword(fieldId, icon) {
+    const field = document.getElementById(fieldId);
+    if (field.type === 'password') {
+        field.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        field.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+</script>
+{% endblock %}

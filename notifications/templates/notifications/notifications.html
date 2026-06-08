@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Notifications - Social Network{% endblock %}
+
+{% block content %}
+
+<div style="max-width: 600px; margin: 0 auto;">
+
+    <div class="page-header">
+        <h2>Notifications</h2>
+        <p class="subtitle">Your recent activity and updates</p>
+    </div>
+
+    {% if notifications %}
+    <div class="notifications-list">
+        {% for notification in notifications %}
+        <a href="{% url 'notifications:mark_read' notification.pk %}" class="notification-item {% if not notification.is_read %}unread{% endif %}">
+            
+            <div class="notification-icon type-{{ notification.notification_type }}">
+                {% if notification.notification_type == 'friend_request' %}
+                <i class="fas fa-user-plus"></i>
+                {% elif notification.notification_type == 'friend_accepted' %}
+                <i class="fas fa-user-check"></i>
+                {% elif notification.notification_type == 'purchase_request' %}
+                <i class="fas fa-shopping-bag"></i>
+                {% elif notification.notification_type == 'purchase_approved' %}
+                <i class="fas fa-check-circle"></i>
+                {% elif notification.notification_type == 'purchase_rejected' %}
+                <i class="fas fa-times-circle"></i>
+                {% elif notification.notification_type == 'representative_approved' %}
+                <i class="fas fa-certificate"></i>
+                {% elif notification.notification_type == 'like' %}
+                <i class="fas fa-heart"></i>
+                {% elif notification.notification_type == 'comment' %}
+                <i class="fas fa-comment"></i>
+                {% else %}
+                <i class="fas fa-bell"></i>
+                {% endif %}
+            </div>
+
+            <div class="notification-body">
+                {% if notification.sender %}
+                <div class="notification-sender-avatar">
+                    {{ notification.sender.student_name|first|upper }}
+                </div>
+                {% endif %}
+                <div class="notification-content">
+                    <p>{{ notification.message }}</p>
+                    <span class="notification-time">{{ notification.created_at|timesince }} ago</span>
+                </div>
+            </div>
+
+            {% if not notification.is_read %}
+            <div class="notification-unread-dot"></div>
+            {% endif %}
+
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-bell-slash"></i>
+        <h3>No notifications yet</h3>
+        <p>You will see notifications for likes, comments, friend requests and more here.</p>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

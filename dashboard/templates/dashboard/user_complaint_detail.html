@@ -1,0 +1,62 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block title %}Complaint Detail{% endblock %}
+{% block page_title %}Complaint Detail{% endblock %}
+
+{% block content %}
+
+<a href="{% url 'dashboard:user_complaints' %}" style="color:var(--accent); text-decoration:none; font-size:0.9rem;">
+    <i class="fas fa-arrow-left"></i> Back to Complaints
+</a>
+
+<div class="dash-table-card" style="margin-top:1.5rem;">
+    <div class="dash-table-header">
+        <h3>Complaint #{{ complaint.pk }}</h3>
+        {% if complaint.status == 'pending' %}
+        <span class="badge badge-warning">Pending</span>
+        {% else %}
+        <span class="badge badge-success">Resolved</span>
+        {% endif %}
+    </div>
+    <div style="padding:1.5rem;">
+        <table>
+            <tr>
+                <td style="font-weight:700; color:var(--grey-text); width:150px;">User</td>
+                <td>{{ complaint.user.student_name }}</td>
+            </tr>
+            <tr>
+                <td style="font-weight:700; color:var(--grey-text);">Email</td>
+                <td>{{ complaint.user.email }}</td>
+            </tr>
+            <tr>
+                <td style="font-weight:700; color:var(--grey-text);">College</td>
+                <td>{{ complaint.user.college_name }}</td>
+            </tr>
+            <tr>
+                <td style="font-weight:700; color:var(--grey-text);">Complaint Type</td>
+                <td>{{ complaint.get_complaint_type_display }}</td>
+            </tr>
+            <tr>
+                <td style="font-weight:700; color:var(--grey-text);">Date</td>
+                <td>{{ complaint.created_at|date:"d M Y H:i" }}</td>
+            </tr>
+            <tr>
+                <td style="font-weight:700; color:var(--grey-text); vertical-align:top; padding-top:1rem;">Issue</td>
+                <td style="padding-top:1rem; line-height:1.7;">{{ complaint.issue }}</td>
+            </tr>
+        </table>
+
+        {% if complaint.status == 'pending' %}
+        <div style="margin-top:1.5rem;">
+            <a href="{% url 'dashboard:resolve_user_complaint' complaint.pk %}"
+               class="btn-sm btn-sm-success"
+               style="padding:0.6rem 1.5rem; font-size:0.9rem;"
+               onclick="return confirm('Mark this complaint as resolved?')">
+                <i class="fas fa-check"></i> Mark as Resolved
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

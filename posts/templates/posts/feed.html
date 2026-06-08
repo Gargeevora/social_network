@@ -1,0 +1,334 @@
+{% extends 'base.html' %}
+
+{% block title %}Feed - Social Network{% endblock %}
+
+{% block content %}
+
+<div class="feed-layout">
+
+    <!-- LEFT - Main Feed -->
+    <div class="feed-main">
+
+        <!-- Stories Bar -->
+        {% if user.is_authenticated and friends %}
+        <div class="stories-bar">
+            <!-- Your Story -->
+            <div class="story-item">
+                <div class="story-avatar your-story">
+                    {% if user.profile_photo %}
+                    <img src="{{ user.profile_photo.url }}" alt="{{ user.student_name }}">
+                    {% else %}
+                    {{ user.student_name|first|upper }}
+                    {% endif %}
+                    <div class="story-add-btn"><i class="fas fa-plus"></i></div>
+                </div>
+                <span>Your Story</span>
+            </div>
+
+            <!-- Friends Stories -->
+            {% for friend in friends %}
+            <a href="{% url 'accounts:user_profile' friend.pk %}" class="story-item">
+                <div class="story-avatar {% if friend.profile_photo %}has-photo{% endif %}">
+                    {% if friend.profile_photo %}
+                    <img src="{{ friend.profile_photo.url }}" alt="{{ friend.student_name }}">
+                    {% else %}
+                    {{ friend.student_name|first|upper }}
+                    {% endif %}
+                </div>
+                <span>{{ friend.student_name|truncatewords:1 }}</span>
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Create Post Bar -->
+        {% if user.is_authenticated %}
+        <div class="create-post-bar">
+            <div class="create-post-avatar">
+                {% if user.profile_photo %}
+                <img src="{{ user.profile_photo.url }}" alt="{{ user.student_name }}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+                {% else %}
+                {{ user.student_name|first|upper }}
+                {% endif %}
+            </div>
+            <a href="{% url 'posts:create' %}" class="create-post-input">
+                What's on your mind, {{ user.student_name|truncatewords:1 }}?
+            </a>
+            <a href="{% url 'posts:create' %}" class="create-post-btn">
+                <i class="fas fa-plus"></i>
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- Posts -->
+        {% if posts %}
+            {% for post in posts %}
+            <div class="post-card" id="post-{{ post.pk }}">
+
+                <!-- Post Header -->
+                <div class="post-header">
+                    <div class="post-avatar">
+                        {% if post.author.profile_photo %}
+                        <img src="{{ post.author.profile_photo.url }}" alt="{{ post.author.student_name }}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+                        {% else %}
+                        {{ post.author.student_name|first|upper }}
+                        {% endif %}
+                    </div>
+                    <div class="post-author-info">
+    <h4><a href="{% url 'accounts:user_profile' post.author.pk %}" style="text-decoration:none; color:var(--navy);">{{ post.author.student_name }}</a></h4>
+    <p>{{ post.author.college_name }} · {{ post.created_at|timesince }} ago</p>
+</div>
+                    {% if user == post.author %}
+                    <div class="post-options">
+                        <button class="post-options-btn" onclick="toggleOptions({{ post.pk }})">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </button>
+                        <div class="post-options-menu" id="options-{{ post.pk }}">
+                            <a href="{% url 'posts:delete' post.pk %}" onclick="return confirm('Delete this post?')">
+                                <i class="fas fa-trash"></i> Delete Post
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Post Caption -->
+                {% if post.caption %}
+                <div class="post-caption">{{ post.caption }}</div>
+                {% endif %}
+
+                <!-- Post Image -->
+                {% if post.image %}
+                <div class="post-image">
+                    <img src="{{ post.image.url }}" alt="Post image">
+                </div>
+                {% endif %}
+
+                <!-- Post Actions -->
+                <div class="post-actions">
+                    {% if user.is_authenticated %}
+                    <button class="action-btn like-btn" onclick="likePost({{ post.pk }}, this)" id="like-btn-{{ post.pk }}">
+                        <i class="fas fa-heart"></i>
+                        <span id="like-count-{{ post.pk }}">{{ post.total_likes }}</span>
+                    </button>
+                    {% else %}
+                    <a href="{% url 'accounts:login' %}" class="action-btn">
+                        <i class="fas fa-heart"></i>
+                        <span>{{ post.total_likes }}</span>
+                    </a>
+                    {% endif %}
+
+                    <button class="action-btn" onclick="toggleComments({{ post.pk }})">
+                        <i class="fas fa-comment"></i>
+                        <span id="comment-count-{{ post.pk }}">{{ post.total_comments }}</span>
+                    </button>
+
+                    {% if user.is_authenticated and user != post.author %}
+{% if post.author.pk not in friend_ids %}
+<button class="action-btn connect-btn" onclick="sendRequest({{ post.author.pk }}, this)">
+    <i class="fas fa-user-plus"></i> Connect
+</button>
+{% endif %}
+{% endif %}
+                </div>
+
+                <!-- Comments Section -->
+                <div class="comments-section" id="comments-{{ post.pk }}" style="display:none;">
+                    <div class="comments-list" id="comments-list-{{ post.pk }}">
+                        {% for comment in post.comments.all %}
+                        <div class="comment">
+                            <div class="comment-avatar">
+                                {% if comment.user.profile_photo %}
+                                <img src="{{ comment.user.profile_photo.url }}" alt="{{ comment.user.student_name }}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+                                {% else %}
+                                {{ comment.user.student_name|first|upper }}
+                                {% endif %}
+                            </div>
+                            <div class="comment-body">
+                                <span class="comment-author">{{ comment.user.student_name }}</span>
+                                <span class="comment-text">{{ comment.text }}</span>
+                                <span class="comment-time">{{ comment.created_at|timesince }} ago</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    {% if user.is_authenticated %}
+                    <div class="add-comment">
+                        <div class="comment-avatar">
+                            {% if user.profile_photo %}
+                            <img src="{{ user.profile_photo.url }}" alt="{{ user.student_name }}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+                            {% else %}
+                            {{ user.student_name|first|upper }}
+                            {% endif %}
+                        </div>
+                        <div class="comment-input-wrapper">
+                            <input
+                                type="text"
+                                id="comment-input-{{ post.pk }}"
+                                placeholder="Write a comment..."
+                                onkeypress="if(event.key==='Enter') addComment({{ post.pk }})"
+                            >
+                            <button onclick="addComment({{ post.pk }})">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+            </div>
+            {% endfor %}
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-newspaper"></i>
+            <h3>No posts yet</h3>
+            <p>Be the first to post something.</p>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    {% if user.is_authenticated %}
+    <div class="feed-sidebar">
+
+        <!-- Suggested People -->
+        {% if suggested_people %}
+        <div class="sidebar-card">
+            <h4>People You May Know</h4>
+            {% for person in suggested_people %}
+            <div class="suggested-person">
+                <a href="{% url 'accounts:user_profile' person.pk %}" class="suggested-avatar">
+                    {% if person.profile_photo %}
+                    <img src="{{ person.profile_photo.url }}" alt="{{ person.student_name }}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+                    {% else %}
+                    {{ person.student_name|first|upper }}
+                    {% endif %}
+                </a>
+                <div class="suggested-info">
+                    <a href="{% url 'accounts:user_profile' person.pk %}" class="suggested-name">{{ person.student_name }}</a>
+                    <span class="suggested-college">{{ person.college_name }}</span>
+{% if person.college_name == user.college_name %}
+<span class="match-tag">Same College</span>
+{% elif person.branch == user.branch %}
+<span class="match-tag">Same Branch</span>
+{% elif person.city == user.city %}
+<span class="match-tag">Same City</span>
+{% endif %}
+                </div>
+                <a href="{% url 'connections:send_request' person.pk %}" class="btn-suggest-connect">
+                    <i class="fas fa-user-plus"></i>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Upcoming Events -->
+        {% if upcoming_events %}
+        <div class="sidebar-card">
+            <h4>Upcoming Events</h4>
+            {% for event in upcoming_events %}
+            <a href="{% url 'events:detail' event.pk %}" class="sidebar-event">
+                <div class="sidebar-event-date">
+                    <span class="event-day">{{ event.event_date|date:"d" }}</span>
+                    <span class="event-month">{{ event.event_date|date:"M" }}</span>
+                </div>
+                <div class="sidebar-event-info">
+                    <p class="sidebar-event-name">{{ event.event_name }}</p>
+                    <p class="sidebar-event-place">{{ event.place }}</p>
+                </div>
+            </a>
+            {% endfor %}
+            <a href="{% url 'events:list' %}" class="sidebar-view-all">View all events →</a>
+        </div>
+        {% endif %}
+
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const csrfToken = '{{ csrf_token }}';
+
+function likePost(postId, btn) {
+    fetch(`/posts/${postId}/like/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken,
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById(`like-count-${postId}`).textContent = data.total_likes;
+        if (data.liked) {
+            btn.classList.add('liked');
+        } else {
+            btn.classList.remove('liked');
+        }
+    });
+}
+
+function addComment(postId) {
+    const input = document.getElementById(`comment-input-${postId}`);
+    const text = input.value.trim();
+    if (!text) return;
+
+    fetch(`/posts/${postId}/comment/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken,
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `text=${encodeURIComponent(text)}`,
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            const commentsList = document.getElementById(`comments-list-${postId}`);
+            const newComment = `
+                <div class="comment">
+                    <div class="comment-avatar">${data.user_name[0].toUpperCase()}</div>
+                    <div class="comment-body">
+                        <span class="comment-author">${data.user_name}</span>
+                        <span class="comment-text">${data.comment_text}</span>
+                        <span class="comment-time">just now</span>
+                    </div>
+                </div>
+            `;
+            commentsList.insertAdjacentHTML('beforeend', newComment);
+            document.getElementById(`comment-count-${postId}`).textContent = data.total_comments;
+            input.value = '';
+        }
+    });
+}
+
+function toggleComments(postId) {
+    const section = document.getElementById(`comments-${postId}`);
+    section.style.display = section.style.display === 'none' ? 'block' : 'none';
+}
+
+function toggleOptions(postId) {
+    const menu = document.getElementById(`options-${postId}`);
+    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+}
+
+function sendRequest(userId, btn) {
+    window.location.href = `/connections/send/${userId}/`;
+}
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.post-options')) {
+        document.querySelectorAll('.post-options-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    }
+});
+</script>
+{% endblock %}

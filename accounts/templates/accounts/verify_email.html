@@ -1,0 +1,42 @@
+{% extends 'base.html' %} {% block title %}Verify Email - Social Network{%endblock %} 
+{% block content %}
+<div class="form-container" style="text-align: center">
+  <div class="verify-icon">
+    <i class="fas fa-envelope-open-text"></i>
+  </div>
+
+  <h2>Check Your Email</h2>
+  <p class="subtitle">
+    We've sent a verification link to your email address. Please click the link
+    to activate your account.
+  </p>
+
+  <div class="verify-info">
+    <i class="fas fa-info-circle"></i>
+    <span>The verification link will expire in <strong>24 hours.</strong></span>
+  </div>
+
+  <div class="verify-steps">
+    <div class="step">
+      <span class="step-number">1</span>
+      <span>Open your email inbox</span>
+    </div>
+    <div class="step">
+      <span class="step-number">2</span>
+      <span>Find the email from Social Network</span>
+    </div>
+    <div class="step">
+      <span class="step-number">3</span>
+      <span>Click the verification link</span>
+    </div>
+    <div class="step">
+      <span class="step-number">4</span>
+      <span>Login to your account</span>
+    </div>
+  </div>
+
+  <div class="form-footer">
+    <p>Already verified? <a href="{% url 'accounts:login' %}">Login here</a></p>
+  </div>
+</div>
+{% endblock %}

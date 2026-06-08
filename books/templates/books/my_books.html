@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}My Books - Social Network{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h2>My Books</h2>
+    <p class="subtitle">Manage your book listings and purchase requests</p>
+</div>
+
+<div class="section-action">
+    <a href="{% url 'books:sell' %}" class="btn-action">
+        <i class="fas fa-plus"></i> List New Book
+    </a>
+</div>
+
+<!-- Incoming Purchase Requests -->
+{% if incoming_requests %}
+<div class="section-header">
+    <h3>Incoming Purchase Requests</h3>
+</div>
+
+<div class="requests-list">
+    {% for req in incoming_requests %}
+    <div class="request-card">
+        <div class="request-info">
+            <h4>{{ req.book.book_name }}</h4>
+            <p><i class="fas fa-user"></i> Buyer: <strong>{{ req.buyer.student_name }}</strong></p>
+            <p><i class="fas fa-university"></i> College: {{ req.buyer.college_name }}</p>
+            <p><i class="fas fa-map-marker-alt"></i> City: {{ req.buyer.city }}</p>
+            {% if req.message %}
+            <p><i class="fas fa-comment"></i> Message: {{ req.message }}</p>
+            {% endif %}
+            <p class="request-date"><i class="fas fa-clock"></i> {{ req.created_at|date:"d M Y" }}</p>
+        </div>
+        <div class="request-actions">
+            <a href="{% url 'books:approve_request' req.pk %}" class="btn-approve">
+                <i class="fas fa-check"></i> Approve
+            </a>
+            <a href="{% url 'books:reject_request' req.pk %}" class="btn-reject">
+                <i class="fas fa-times"></i> Reject
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state" style="padding: 2rem;">
+    <i class="fas fa-inbox"></i>
+    <h3>No pending requests</h3>
+    <p>You have no incoming purchase requests right now.</p>
+</div>
+{% endif %}
+
+<!-- My Listings -->
+<div class="section-header" style="margin-top: 2rem;">
+    <h3>My Listings</h3>
+</div>
+
+{% if my_listings %}
+<div class="books-grid">
+    {% for book in my_listings %}
+    <div class="book-card" style="cursor:default;">
+        <div class="book-image">
+            {% if book.book_photo %}
+            <img src="{{ book.book_photo.url }}" alt="{{ book.book_name }}">
+            {% else %}
+            <div class="book-image-placeholder">
+                <i class="fas fa-book"></i>
+            </div>
+            {% endif %}
+        </div>
+        <div class="book-info">
+            <h3>{{ book.book_name }}</h3>
+            <p class="book-publisher">{{ book.publisher_name }}</p>
+            <div class="book-footer">
+                <span class="book-price">₹{{ book.price }}</span>
+                <span class="book-status-small status-{{ book.status }}">
+                    {{ book.get_status_display }}
+                </span>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state" style="padding: 2rem;">
+    <i class="fas fa-book"></i>
+    <h3>No listings yet</h3>
+    <p>You have not listed any books for sale.</p>
+</div>
+{% endif %}
+
+<!-- Purchase History -->
+<div class="section-header" style="margin-top: 2rem;">
+    <h3>My Purchase History</h3>
+</div>
+
+{% if purchase_history %}
+<div class="requests-list">
+    {% for req in purchase_history %}
+    <div class="request-card">
+        <div class="request-info">
+            <h4>{{ req.book.book_name }}</h4>
+            <p><i class="fas fa-user"></i> Seller: <strong>{{ req.book.seller.student_name }}</strong></p>
+            <p><i class="fas fa-university"></i> College: {{ req.book.seller.college_name }}</p>
+            <p><i class="fas fa-rupee-sign"></i> Price: ₹{{ req.book.price }}</p>
+            <p><i class="fas fa-calendar"></i> Approved on: {{ req.created_at|date:"d M Y" }}</p>
+        </div>
+        <div>
+            <span class="book-status-small status-available" style="background:#d4edda; color:#155724;">
+                <i class="fas fa-check"></i> Approved
+            </span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state" style="padding: 2rem;">
+    <i class="fas fa-shopping-bag"></i>
+    <h3>No purchase history</h3>
+    <p>Books you successfully purchased will appear here.</p>
+</div>
+{% endif %}
+
+{% endblock %}

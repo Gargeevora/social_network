@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Friend Requests - Social Network{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h2>Friend Requests</h2>
+    <p class="subtitle">People who want to connect with you</p>
+</div>
+
+{% if incoming_requests %}
+<div class="requests-list">
+    {% for connection in incoming_requests %}
+    <div class="request-card">
+        <div class="request-user-info">
+            <div class="request-avatar">
+                {{ connection.sender.student_name|first|upper }}
+            </div>
+            <div class="request-details">
+                <h4>{{ connection.sender.student_name }}</h4>
+                <p><i class="fas fa-university"></i> {{ connection.sender.college_name }}</p>
+                <p><i class="fas fa-code-branch"></i> {{ connection.sender.branch }} — Year {{ connection.sender.year }}</p>
+                <p><i class="fas fa-map-marker-alt"></i> {{ connection.sender.city }}</p>
+            </div>
+        </div>
+        <div class="request-actions">
+            <a href="{% url 'connections:accept' connection.pk %}" class="btn-approve">
+                <i class="fas fa-check"></i> Accept
+            </a>
+            <a href="{% url 'connections:reject' connection.pk %}" class="btn-reject">
+                <i class="fas fa-times"></i> Reject
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <i class="fas fa-user-friends"></i>
+    <h3>No friend requests</h3>
+    <p>You have no pending friend requests.</p>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block title %}Social Network - Connect with Students{% endblock %}
+
+{% block body_class %}home-page{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="hero-content">
+        <h1>Connect with Students<br>Across Colleges</h1>
+        <p class="hero-subtitle">Share posts, buy and sell books, discover college events, and build your student network — all in one place.</p>
+        <div class="hero-buttons">
+            <a href="{% url 'accounts:register' %}" class="btn-hero-primary">Get Started Free</a>
+            <a href="{% url 'accounts:login' %}" class="btn-hero-secondary">Login</a>
+        </div>
+    </div>
+    <div class="hero-illustration">
+        <div class="hero-card-stack">
+            <div class="hero-card card-1">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Student Network</span>
+            </div>
+            <div class="hero-card card-2">
+                <i class="fas fa-book"></i>
+                <span>Buy & Sell Books</span>
+            </div>
+            <div class="hero-card card-3">
+                <i class="fas fa-calendar-alt"></i>
+                <span>College Events</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="features-section">
+    <h2 class="section-heading">Everything You Need as a Student</h2>
+    <p class="section-subheading">One platform for all your college networking needs</p>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon" style="background: #e8f0fe;">
+                <i class="fas fa-newspaper" style="color: #4f8ef7;"></i>
+            </div>
+            <h3>Student Feed</h3>
+            <p>Share your thoughts, achievements and moments with students across colleges. Like and comment on posts just like Instagram.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon" style="background: #d4edda;">
+                <i class="fas fa-book" style="color: #28a745;"></i>
+            </div>
+            <h3>Book Exchange</h3>
+            <p>Sell your old textbooks and buy books from other students at affordable prices. No middleman — direct student to student.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon" style="background: #fff3cd;">
+                <i class="fas fa-calendar-alt" style="color: #ffc107;"></i>
+            </div>
+            <h3>College Events</h3>
+            <p>Discover hackathons, sports events, cultural fests and more happening across colleges. Never miss an opportunity.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon" style="background: #fce4ec;">
+                <i class="fas fa-user-friends" style="color: #e0245e;"></i>
+            </div>
+            <h3>Student Connections</h3>
+            <p>Connect with students from other colleges, build your network and grow together as a community.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon" style="background: #d1ecf1;">
+                <i class="fas fa-certificate" style="color: #17a2b8;"></i>
+            </div>
+            <h3>College Representatives</h3>
+            <p>Verified college representatives can announce official events and represent their college on the platform.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon" style="background: #e8f4fd;">
+                <i class="fas fa-bell" style="color: #4f8ef7;"></i>
+            </div>
+            <h3>Smart Notifications</h3>
+            <p>Get notified instantly for friend requests, book purchases, event announcements and post interactions.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="stats-section">
+    <div class="stat-item">
+        <span class="stat-big-number">500+</span>
+        <span class="stat-big-label">Students</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-big-number">50+</span>
+        <span class="stat-big-label">Colleges</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-big-number">200+</span>
+        <span class="stat-big-label">Books Listed</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-big-number">100+</span>
+        <span class="stat-big-label">Events Posted</span>
+    </div>
+</div>
+
+<!-- About Section -->
+<div class="about-section">
+    <div class="about-content">
+        <div class="about-text">
+            <h2>About Social Network</h2>
+            <p>Social Network is a dedicated platform built for college students across India. We believe every student deserves a connected community where they can share knowledge, discover opportunities, and grow together.</p>
+            <p>Whether you are looking to sell your old textbooks, find out about upcoming hackathons, or simply connect with like-minded students from other colleges — Social Network is your one-stop destination.</p>
+            <div class="about-highlights">
+                <div class="about-highlight">
+                    <i class="fas fa-check-circle"></i>
+                    <span>100% Student Focused</span>
+                </div>
+                <div class="about-highlight">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Verified College Representatives</span>
+                </div>
+                <div class="about-highlight">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Safe & Secure Platform</span>
+                </div>
+                <div class="about-highlight">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Free to Use</span>
+                </div>
+            </div>
+        </div>
+        <div class="about-image">
+            <div class="about-illustration">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contact & Help Section -->
+<div class="contact-section">
+    <h2 class="section-heading">Need Help?</h2>
+    <p class="section-subheading">We are here to assist you with anything you need</p>
+
+    <div class="contact-grid">
+        <div class="contact-card">
+            <div class="contact-icon">
+                <i class="fas fa-envelope"></i>
+            </div>
+            <h3>Email Support</h3>
+            <p>Have a question or issue? Send us an email and we will get back to you within 24 hours.</p>
+            <a href="mailto:support@socialnetwork.com" class="contact-link">support@socialnetwork.com</a>
+        </div>
+
+        <div class="contact-card">
+            <div class="contact-icon">
+                <i class="fas fa-question-circle"></i>
+            </div>
+            <h3>FAQ</h3>
+            <p>Find answers to the most commonly asked questions about Social Network and its features.</p>
+            <a href="#" class="contact-link">View FAQ</a>
+        </div>
+
+        <div class="contact-card">
+            <div class="contact-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h3>Report an Issue</h3>
+            <p>Found something suspicious or want to report a problem? Let us know and we will take action.</p>
+            <a href="mailto:report@socialnetwork.com" class="contact-link">Report Now</a>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="cta-section">
+    <h2>Ready to Join the Network?</h2>
+    <p>Join thousands of students already connected on Social Network.</p>
+    <a href="{% url 'accounts:register' %}" class="btn-hero-primary" style="font-size:1.1rem; padding: 0.9rem 2.5rem;">
+        Create Your Account
+    </a>
+</div>
+
+{% endblock %}

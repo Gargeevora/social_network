@@ -1,0 +1,70 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block title %}Complaints{% endblock %}
+{% block page_title %}Complaint Management{% endblock %}
+
+{% block content %}
+
+<div class="dash-table-card">
+    <div class="dash-table-header">
+        <h3>All Complaints</h3>
+        <span style="font-size:0.85rem; color:var(--grey-text);">{{ complaints.count }} total</span>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Complainant</th>
+                <th>Accused</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for complaint in complaints %}
+            <tr>
+                <td>{{ complaint.complainant.student_name }}</td>
+                <td>{{ complaint.accused.student_name }}</td>
+                <td>{{ complaint.get_complaint_type_display }}</td>
+                <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                    {{ complaint.description }}
+                </td>
+                <td>
+                    {% if complaint.status == 'pending' %}
+                    <span class="badge badge-warning">Pending</span>
+                    {% elif complaint.status == 'resolved' %}
+                    <span class="badge badge-success">Resolved</span>
+                    {% else %}
+                    <span class="badge badge-error">Dismissed</span>
+                    {% endif %}
+                </td>
+                <td>{{ complaint.created_at|date:"d M Y" }}</td>
+                <td>
+                    {% if complaint.status == 'pending' %}
+                    <a href="{% url 'dashboard:resolve_complaint' complaint.pk %}" 
+                       class="btn-sm btn-sm-success"
+                       onclick="return confirm('Mark this complaint as resolved?')">
+                        <i class="fas fa-check"></i> Resolve
+                    </a>
+                    <a href="{% url 'dashboard:dismiss_complaint' complaint.pk %}"
+                       class="btn-sm btn-sm-danger"
+                       onclick="return confirm('Dismiss this complaint?')">
+                        <i class="fas fa-times"></i> Dismiss
+                    </a>
+                    {% else %}
+                    <span style="color:var(--grey-text); font-size:0.8rem;">Handled</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" style="text-align:center; color:var(--grey-text);">No complaints yet</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

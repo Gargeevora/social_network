@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile - Social Network{% endblock %}
+
+{% block content %}
+
+<div class="back-link">
+    <a href="{% url 'accounts:profile' %}"><i class="fas fa-arrow-left"></i> Back to Profile</a>
+</div>
+
+<div class="form-container" style="max-width: 600px;">
+
+    <div class="announce-header">
+        <div class="announce-icon">
+            <i class="fas fa-user-edit"></i>
+        </div>
+        <div>
+            <h2>Edit Profile</h2>
+            <p class="subtitle">Update your profile information</p>
+        </div>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Cover Photo -->
+        <div class="form-group">
+            <label>Cover Photo</label>
+            {% if request.user.cover_photo %}
+            <img src="{{ request.user.cover_photo.url }}" alt="Cover" style="width:100%; height:120px; object-fit:cover; border-radius:10px; margin-bottom:0.5rem;">
+            {% endif %}
+            <div class="cover-upload-area" id="coverUploadArea">
+                <i class="fas fa-image"></i>
+                <p>Click to upload cover photo</p>
+                <input type="file" name="cover_photo" accept="image/*" onchange="previewCover(this)">
+            </div>
+            <img id="coverPreview" src="" style="display:none; width:100%; height:120px; object-fit:cover; border-radius:10px; margin-top:0.5rem;">
+        </div>
+
+        <!-- Profile Photo -->
+        <div class="form-group">
+            <label>Profile Photo</label>
+            <div class="profile-photo-upload">
+                <div class="profile-photo-preview">
+                    {% if request.user.profile_photo %}
+                    <img src="{{ request.user.profile_photo.url }}" alt="Profile" id="profilePreview">
+                    {% else %}
+                    <div class="profile-photo-placeholder" id="profilePlaceholder">
+                        {{ request.user.student_name|first|upper }}
+                    </div>
+                    <img id="profilePreview" src="" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:50%;">
+                    {% endif %}
+                </div>
+                <div>
+                    <input type="file" name="profile_photo" accept="image/*" onchange="previewProfile(this)" style="font-size:0.85rem;">
+                    <small class="field-hint">Upload a clear profile photo</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="id_student_name">Full Name</label>
+            <input type="text" name="student_name" id="id_student_name" value="{{ form.student_name.value|default:'' }}" required>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_college_name">College Name</label>
+                <input type="text" name="college_name" id="id_college_name" value="{{ form.college_name.value|default:'' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="id_branch">Branch</label>
+                <input type="text" name="branch" id="id_branch" value="{{ form.branch.value|default:'' }}" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_year">Current Year</label>
+                <select name="year" id="id_year" required>
+                    <option value="1" {% if form.year.value == '1' or form.year.value == 1 %}selected{% endif %}>1st Year</option>
+                    <option value="2" {% if form.year.value == '2' or form.year.value == 2 %}selected{% endif %}>2nd Year</option>
+                    <option value="3" {% if form.year.value == '3' or form.year.value == 3 %}selected{% endif %}>3rd Year</option>
+                    <option value="4" {% if form.year.value == '4' or form.year.value == 4 %}selected{% endif %}>4th Year</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="id_city">City</label>
+                <input type="text" name="city" id="id_city" value="{{ form.city.value|default:'' }}" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="id_address">Address</label>
+            <textarea name="address" id="id_address" rows="3">{{ form.address.value|default:'' }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="id_phone_number">Phone Number</label>
+            <input type="tel" name="phone_number" id="id_phone_number" value="{{ form.phone_number.value|default:'' }}">
+        </div>
+
+        <button type="submit" class="btn-primary">
+            <i class="fas fa-save"></i> Save Changes
+        </button>
+
+    </form>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function previewCover(input) {
+    const preview = document.getElementById('coverPreview');
+    const uploadArea = document.getElementById('coverUploadArea');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            uploadArea.style.borderColor = 'var(--accent)';
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function previewProfile(input) {
+    const preview = document.getElementById('profilePreview');
+    const placeholder = document.getElementById('profilePlaceholder');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            if (placeholder) placeholder.style.display = 'none';
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+{% endblock %}

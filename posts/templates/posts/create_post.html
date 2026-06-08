@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Post - Social Network{% endblock %}
+
+{% block content %}
+
+<div class="back-link">
+    <a href="{% url 'posts:feed' %}"><i class="fas fa-arrow-left"></i> Back to Feed</a>
+</div>
+
+<div class="create-post-container">
+
+    <div class="create-post-header">
+        <div class="post-avatar" style="width:50px; height:50px; font-size:1.2rem;">
+            {{ user.student_name|first|upper }}
+        </div>
+        <div>
+            <h2>Create Post</h2>
+            <p class="subtitle">{{ user.student_name }} · {{ user.college_name }}</p>
+        </div>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <textarea
+                name="caption"
+                id="id_caption"
+                placeholder="What's on your mind?"
+                rows="4"
+            >{{ form.caption.value|default:'' }}</textarea>
+            {% if form.caption.errors %}
+            <span class="field-error">{{ form.caption.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <!-- Image Preview -->
+        <div class="post-image-upload">
+            <div class="image-upload-area" id="imageUploadArea">
+                <i class="fas fa-image"></i>
+                <p>Add a photo to your post</p>
+                <input
+                    type="file"
+                    name="image"
+                    id="id_image"
+                    accept="image/*"
+                    onchange="previewImage(this)"
+                >
+            </div>
+            <img id="imagePreview" src="" alt="Preview" style="display:none; width:100%; border-radius:10px; margin-top:0.8rem; max-height:400px; object-fit:cover;">
+            {% if form.image.errors %}
+            <span class="field-error">{{ form.image.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        {% if form.non_field_errors %}
+        <div class="field-error" style="margin-bottom:1rem;">
+            {{ form.non_field_errors.0 }}
+        </div>
+        {% endif %}
+
+        <div class="create-post-actions">
+            <a href="{% url 'posts:feed' %}" class="btn-cancel">Cancel</a>
+            <button type="submit" class="btn-primary" style="width:auto; padding: 0.7rem 2rem;">
+                <i class="fas fa-paper-plane"></i> Post
+            </button>
+        </div>
+
+    </form>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function previewImage(input) {
+    const preview = document.getElementById('imagePreview');
+    const uploadArea = document.getElementById('imageUploadArea');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            uploadArea.style.display = 'none';
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+{% endblock %}

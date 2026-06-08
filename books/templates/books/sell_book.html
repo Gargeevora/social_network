@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+
+{% block title %}Sell Your Book - Social Network{% endblock %}
+
+{% block content %}
+
+<div class="back-link">
+    <a href="{% url 'books:list' %}"><i class="fas fa-arrow-left"></i> Back to Books</a>
+</div>
+
+<div class="form-container" style="max-width: 600px;">
+
+    <h2>Sell Your Book</h2>
+    <p class="subtitle">Fill in the details below to list your book for sale</p>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="id_book_name">Book Name</label>
+            <input
+                type="text"
+                name="book_name"
+                id="id_book_name"
+                placeholder="Enter book name"
+                value="{{ form.book_name.value|default:'' }}"
+                required
+            >
+            {% if form.book_name.errors %}
+            <span class="field-error">{{ form.book_name.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_publisher_name">Publisher Name</label>
+                <input
+                    type="text"
+                    name="publisher_name"
+                    id="id_publisher_name"
+                    placeholder="Publisher name"
+                    value="{{ form.publisher_name.value|default:'' }}"
+                    required
+                >
+                {% if form.publisher_name.errors %}
+                <span class="field-error">{{ form.publisher_name.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_edition_year">Edition Year</label>
+                <input
+                    type="number"
+                    name="edition_year"
+                    id="id_edition_year"
+                    placeholder="e.g. 2022"
+                    value="{{ form.edition_year.value|default:'' }}"
+                    required
+                >
+                {% if form.edition_year.errors %}
+                <span class="field-error">{{ form.edition_year.errors.0 }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_condition">Book Condition</label>
+                <select name="condition" id="id_condition" required>
+                    <option value="">Select Condition</option>
+                    <option value="new" {% if form.condition.value == 'new' %}selected{% endif %}>New</option>
+                    <option value="good" {% if form.condition.value == 'good' %}selected{% endif %}>Good</option>
+                    <option value="fair" {% if form.condition.value == 'fair' %}selected{% endif %}>Fair</option>
+                    <option value="poor" {% if form.condition.value == 'poor' %}selected{% endif %}>Poor</option>
+                </select>
+                {% if form.condition.errors %}
+                <span class="field-error">{{ form.condition.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_price">Price (₹)</label>
+                <input
+                    type="number"
+                    name="price"
+                    id="id_price"
+                    placeholder="Enter price in rupees"
+                    value="{{ form.price.value|default:'' }}"
+                    required
+                >
+                {% if form.price.errors %}
+                <span class="field-error">{{ form.price.errors.0 }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="id_description">Description (optional)</label>
+            <textarea
+                name="description"
+                id="id_description"
+                placeholder="Any extra details about the book..."
+                rows="3"
+            >{{ form.description.value|default:'' }}</textarea>
+            {% if form.description.errors %}
+            <span class="field-error">{{ form.description.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_book_photo">Book Photo</label>
+            <input
+                type="file"
+                name="book_photo"
+                id="id_book_photo"
+                accept="image/*"
+                capture="environment"
+                required
+            >
+            <small class="field-hint">Take a clear photo of your book (camera will open on mobile)</small>
+            {% if form.book_photo.errors %}
+            <span class="field-error">{{ form.book_photo.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn-primary">
+            <i class="fas fa-upload"></i> List My Book
+        </button>
+        <div class="form-group">
+    <div class="form-group">
+    <label class="terms-checkbox"><br>
+        <p><span>I agree to the <a href="#" onclick="document.getElementById('termsModal').style.display='flex'; return false;">Terms & Conditions</a>. I understand that Social Network only connects buyers and sellers — all meetups and transactions are my own responsibility.</span></p>
+        <input type="checkbox" name="seller_agreed_terms" required>
+    </label>
+</div>
+
+<!-- Terms Modal -->
+<div id="termsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:var(--white); border-radius:16px; padding:2rem; max-width:600px; width:90%; max-height:80vh; overflow-y:auto; position:relative;">
+        <button onclick="document.getElementById('termsModal').style.display='none'" style="position:absolute; top:1rem; right:1rem; background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--grey-text);">×</button>
+        <h2 style="color:var(--navy); margin-bottom:1rem;">Terms & Conditions</h2>
+        <p style="color:var(--grey-text); font-size:0.8rem; margin-bottom:1.5rem;">TechIndiCraft — Social Network</p>
+
+        <div class="terms-section">
+            <h3 style="color:var(--navy); font-size:1rem; margin-bottom:0.5rem;">Book Exchange Disclaimer</h3>
+            <div class="terms-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>
+                    <strong>Important Notice:</strong>
+                    <ul>
+                        <li>All book transactions are conducted offline and directly between buyer and seller.</li>
+                        <li>Social Network does not provide delivery or payment services.</li>
+                        <li>The physical meetup is arranged entirely at your own discretion.</li>
+                        <li>TechIndiCraft and Social Network are not responsible for any incidents arising from offline meetups.</li>
+                        <li>Always meet in safe, public locations such as college campuses or libraries.</li>
+                        <li>Never share sensitive personal information beyond what is necessary.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="terms-section">
+            <h3 style="color:var(--navy); font-size:1rem; margin-bottom:0.5rem;">User Responsibilities</h3>
+            <ul class="terms-list">
+                <li>You are a genuine college student and your information is accurate.</li>
+                <li>You will not misuse the platform for fraud or illegal activity.</li>
+                <li>You take full personal responsibility for any offline meetups.</li>
+                <li>You will report suspicious activity to the admin.</li>
+            </ul>
+        </div>
+
+        <div class="terms-section">
+            <h3 style="color:var(--navy); font-size:1rem; margin-bottom:0.5rem;">Limitation of Liability</h3>
+            <p style="color:var(--grey-text); font-size:0.88rem; line-height:1.7;">TechIndiCraft and Social Network shall not be held liable for any damages arising from the use of this platform, including disputes between users or physical harm arising from offline meetups.</p>
+        </div>
+
+        <button onclick="document.getElementById('termsModal').style.display='none'" style="background:var(--navy); color:var(--white); border:none; padding:0.7rem 2rem; border-radius:8px; cursor:pointer; font-size:0.95rem; font-weight:600; margin-top:1rem;">
+            Close
+        </button>
+    </div>
+</div>
+</div>
+
+    </form>
+</div>
+
+{% endblock %}

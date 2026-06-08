@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ book.book_name }} - Social Network{% endblock %}
+
+{% block content %}
+
+<div class="back-link">
+    <a href="{% url 'books:list' %}"><i class="fas fa-arrow-left"></i> Back to Books</a>
+</div>
+
+<div class="book-detail-container">
+
+    <!-- Book Image -->
+    <div class="book-detail-image">
+        {% if book.book_photo %}
+        <img src="{{ book.book_photo.url }}" alt="{{ book.book_name }}">
+        {% else %}
+        <div class="book-image-placeholder large">
+            <i class="fas fa-book"></i>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Book Info -->
+    <div class="book-detail-info">
+        <h2>{{ book.book_name }}</h2>
+
+        <div class="detail-rows">
+            <div class="detail-row">
+                <span class="detail-label">Publisher</span>
+                <span class="detail-value">{{ book.publisher_name }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Edition Year</span>
+                <span class="detail-value">{{ book.edition_year }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Condition</span>
+                <span class="detail-value">
+                    <span class="book-condition condition-{{ book.condition }}">
+                        {{ book.get_condition_display }}
+                    </span>
+                </span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Price</span>
+                <span class="detail-value book-price">₹{{ book.price }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Seller</span>
+                <span class="detail-value">{{ book.seller.student_name }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">College</span>
+                <span class="detail-value">{{ book.seller.college_name }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">City</span>
+                <span class="detail-value">{{ book.seller.city }}</span>
+            </div>
+            {% if book.description %}
+            <div class="detail-row">
+                <span class="detail-label">Description</span>
+                <span class="detail-value">{{ book.description }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Status -->
+        {% if book.status == 'sold' %}
+        <div class="book-status-badge sold">
+            <i class="fas fa-times-circle"></i> This book has been sold
+        </div>
+
+        {% elif book.status == 'pending' %}
+        <div class="book-status-badge pending">
+            <i class="fas fa-clock"></i> Purchase request pending
+        </div>
+
+        {% else %}
+            {% if user.is_authenticated %}
+                {% if book.seller == user %}
+                <div class="book-status-badge own">
+                    <i class="fas fa-info-circle"></i> This is your listing
+                </div>
+                {% elif already_requested %}
+                <div class="book-status-badge pending">
+                    <i class="fas fa-clock"></i> You have already sent a purchase request
+                </div>
+                {% else %}
+                <!-- Purchase Request Form -->
+                <form method="POST" action="{% url 'books:send_request' book.pk %}">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="id_message">Message to Seller (optional)</label>
+        <textarea 
+            name="message" 
+            id="id_message"
+            placeholder="e.g. I can meet tomorrow at college..."
+            rows="3"
+        ></textarea>
+    </div>
+
+    <div class="form-group">
+        <label class="terms-checkbox">
+            <span>I agree to the <a href="#" onclick="document.getElementById('termsModal').style.display='flex'; return false;">Terms & Conditions</a>. I understand that the meetup and transaction is my own responsibility.</span>
+            <input type="checkbox" name="buyer_agreed_terms" required>
+        </label>
+    </div>
+
+    <!-- Terms Modal -->
+    <div id="termsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+        <div style="background:var(--white); border-radius:16px; padding:2rem; max-width:600px; width:90%; max-height:80vh; overflow-y:auto; position:relative;">
+            <button onclick="document.getElementById('termsModal').style.display='none'" style="position:absolute; top:1rem; right:1rem; background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--grey-text);">×</button>
+            <h2 style="color:var(--navy); margin-bottom:1rem;">Terms & Conditions</h2>
+            <p style="color:var(--grey-text); font-size:0.8rem; margin-bottom:1.5rem;">TechIndiCraft — Social Network</p>
+
+            <div class="terms-section">
+                <h3 style="color:var(--navy); font-size:1rem; margin-bottom:0.5rem;">Book Exchange Disclaimer</h3>
+                <div class="terms-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <strong>Important Notice:</strong>
+                        <ul>
+                            <li>All book transactions are conducted offline and directly between buyer and seller.</li>
+                            <li>Social Network does not provide delivery or payment services.</li>
+                            <li>The physical meetup is arranged entirely at your own discretion.</li>
+                            <li>TechIndiCraft and Social Network are not responsible for any incidents arising from offline meetups.</li>
+                            <li>Always meet in safe, public locations such as college campuses or libraries.</li>
+                            <li>Never share sensitive personal information beyond what is necessary.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="terms-section">
+                <h3 style="color:var(--navy); font-size:1rem; margin-bottom:0.5rem;">User Responsibilities</h3>
+                <ul class="terms-list">
+                    <li>You are a genuine college student and your information is accurate.</li>
+                    <li>You will not misuse the platform for fraud or illegal activity.</li>
+                    <li>You take full personal responsibility for any offline meetups.</li>
+                    <li>You will report suspicious activity to the admin.</li>
+                </ul>
+            </div>
+
+            <div class="terms-section">
+                <h3 style="color:var(--navy); font-size:1rem; margin-bottom:0.5rem;">Limitation of Liability</h3>
+                <p style="color:var(--grey-text); font-size:0.88rem; line-height:1.7;">TechIndiCraft and Social Network shall not be held liable for any damages arising from the use of this platform, including disputes between users or physical harm arising from offline meetups.</p>
+            </div>
+
+            <button onclick="document.getElementById('termsModal').style.display='none'" style="background:var(--navy); color:var(--white); border:none; padding:0.7rem 2rem; border-radius:8px; cursor:pointer; font-size:0.95rem; font-weight:600; margin-top:1rem;">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <button type="submit" class="btn-primary">
+        <i class="fas fa-paper-plane"></i> Send Purchase Request
+    </button>
+</form>
+                {% endif %}
+            {% else %}
+            <div class="login-prompt">
+                <p>You need to login to send a purchase request.</p>
+                <a href="{% url 'accounts:login' %}" class="btn-primary" style="width:auto; padding: 0.7rem 2rem;">
+                    Login to Continue
+                </a>
+            </div>
+            {% endif %}
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}

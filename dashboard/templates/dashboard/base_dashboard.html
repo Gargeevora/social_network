@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Dashboard{% endblock %} - Social Network</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --navy: #1a2744;
+            --navy-light: #243156;
+            --white: #ffffff;
+            --grey-light: #f4f6fb;
+            --grey: #e0e4ef;
+            --grey-text: #8892a4;
+            --accent: #4f8ef7;
+            --success: #28a745;
+            --error: #dc3545;
+            --warning: #ffc107;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--grey-light);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .dash-sidebar {
+            width: 250px;
+            background: var(--navy);
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .dash-logo {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--navy-light);
+        }
+
+        .dash-logo h2 {
+            color: var(--white);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .dash-logo h2 span { color: var(--accent); }
+
+        .dash-logo p {
+            color: var(--grey-text);
+            font-size: 0.75rem;
+            margin-top: 0.3rem;
+        }
+
+        .dash-nav {
+            padding: 1rem 0;
+            flex: 1;
+        }
+
+        .dash-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1.5rem;
+            color: #8892a4;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .dash-nav a:hover {
+            background: var(--navy-light);
+            color: var(--white);
+        }
+
+        .dash-nav a.active {
+            background: var(--navy-light);
+            color: var(--white);
+            border-left: 3px solid var(--accent);
+        }
+
+        .dash-nav a i { width: 18px; }
+
+        .dash-nav .nav-section {
+            padding: 0.8rem 1.5rem 0.3rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        .dash-bottom {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--navy-light);
+        }
+
+        .dash-admin-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .dash-admin-avatar {
+            width: 35px;
+            height: 35px;
+            background: var(--accent);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .dash-admin-info div p:first-child {
+            color: var(--white);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .dash-admin-info div p:last-child {
+            color: var(--grey-text);
+            font-size: 0.75rem;
+        }
+
+        .dash-logout {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--error);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* MAIN CONTENT */
+        .dash-main {
+            margin-left: 250px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dash-topbar {
+            background: var(--white);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--grey);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dash-topbar h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .dash-topbar a {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .dash-content {
+            padding: 2rem;
+            flex: 1;
+        }
+
+        /* CARDS */
+        .dash-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .dash-stat-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(26,39,68,0.07);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .dash-stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .dash-stat-info h3 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--navy);
+        }
+
+        .dash-stat-info p {
+            font-size: 0.8rem;
+            color: var(--grey-text);
+        }
+
+        /* TABLE */
+        .dash-table-card {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(26,39,68,0.07);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .dash-table-header {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--grey);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dash-table-header h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--grey-light);
+            padding: 0.8rem 1.2rem;
+            text-align: left;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--grey-text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 0.9rem 1.2rem;
+            font-size: 0.88rem;
+            color: var(--navy);
+            border-bottom: 1px solid var(--grey-light);
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: var(--grey-light); }
+
+        /* BADGES */
+        .badge {
+            padding: 0.25rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-error { background: #f8d7da; color: #721c24; }
+        .badge-warning { background: #fff3cd; color: #856404; }
+        .badge-info { background: #d1ecf1; color: #0c5460; }
+
+        /* BUTTONS */
+        .btn-sm {
+            padding: 0.35rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-sm-danger { background: #f8d7da; color: #721c24; }
+        .btn-sm-success { background: #d4edda; color: #155724; }
+        .btn-sm-warning { background: #fff3cd; color: #856404; }
+        .btn-sm-info { background: #d1ecf1; color: #0c5460; }
+
+        /* MESSAGES */
+        .dash-messages {
+            margin-bottom: 1rem;
+        }
+
+        .dash-message {
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .dash-message.success { background: #d4edda; color: #155724; }
+        .dash-message.error { background: #f8d7da; color: #721c24; }
+
+        /* SEARCH */
+        .dash-search {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .dash-search input {
+            padding: 0.5rem 1rem;
+            border: 1.5px solid var(--grey);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .dash-search button {
+            padding: 0.5rem 1rem;
+            background: var(--navy);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="dash-sidebar">
+        <div class="dash-logo">
+            <h2><i class="fas fa-graduation-cap"></i> <span>Social</span> Network</h2>
+            <p>Admin Dashboard</p>
+        </div>
+
+        <nav class="dash-nav">
+            <div class="nav-section">Overview</div>
+            <a href="{% url 'dashboard:home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+
+            <div class="nav-section">Management</div>
+            <a href="{% url 'dashboard:users' %}" class="{% if request.resolver_match.url_name == 'users' %}active{% endif %}">
+                <i class="fas fa-users"></i> Users
+            </a>
+            <a href="{% url 'dashboard:user_complaints' %}" class="{% if request.resolver_match.url_name == 'user_complaints' %}active{% endif %}">
+    <i class="fas fa-exclamation-circle"></i> User Complaints
+</a>
+            <a href="{% url 'dashboard:representative_requests' %}" class="{% if request.resolver_match.url_name == 'representative_requests' %}active{% endif %}">
+                <i class="fas fa-certificate"></i> Rep Requests
+            </a>
+
+            <div class="nav-section">Security</div>
+            <a href="{% url 'dashboard:audit_log' %}" class="{% if request.resolver_match.url_name == 'audit_log' %}active{% endif %}">
+                <i class="fas fa-history"></i> Audit Log
+            </a>
+        </nav>
+
+        <div class="dash-bottom">
+            <div class="dash-admin-info">
+                <div class="dash-admin-avatar">{{ request.user.student_name|first|upper }}</div>
+                <div>
+                    <p>{{ request.user.student_name }}</p>
+                    <p>Super Admin</p>
+                </div>
+            </div>
+            <a href="{% url 'accounts:logout' %}" class="dash-logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="dash-main">
+        <div class="dash-topbar">
+            <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+            <a href="{% url 'posts:feed' %}"><i class="fas fa-external-link-alt"></i> View Website</a>
+        </div>
+
+        <div class="dash-content">
+            {% if messages %}
+            <div class="dash-messages">
+                {% for message in messages %}
+                <div class="dash-message {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+</body>
+</html>

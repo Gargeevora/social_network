@@ -1,0 +1,111 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block title %}Dashboard Home{% endblock %}
+{% block page_title %}Dashboard Overview{% endblock %}
+
+{% block content %}
+
+<!-- Stats Grid -->
+<div class="dash-stats-grid">
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon" style="background:#e8f0fe;">
+            <i class="fas fa-users" style="color:#4f8ef7;"></i>
+        </div>
+        <div class="dash-stat-info">
+            <h3>{{ total_users }}</h3>
+            <p>Total Users</p>
+        </div>
+    </div>
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon" style="background:#d4edda;">
+            <i class="fas fa-newspaper" style="color:#28a745;"></i>
+        </div>
+        <div class="dash-stat-info">
+            <h3>{{ total_posts }}</h3>
+            <p>Total Posts</p>
+        </div>
+    </div>
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon" style="background:#fff3cd;">
+            <i class="fas fa-book" style="color:#ffc107;"></i>
+        </div>
+        <div class="dash-stat-info">
+            <h3>{{ total_books }}</h3>
+            <p>Books Listed</p>
+        </div>
+    </div>
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon" style="background:#fce4ec;">
+            <i class="fas fa-calendar" style="color:#e0245e;"></i>
+        </div>
+        <div class="dash-stat-info">
+            <h3>{{ total_events }}</h3>
+            <p>Events Posted</p>
+        </div>
+    </div>
+</div>
+
+<!-- Second Stats Row -->
+<div class="dash-stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon" style="background:#f8d7da;">
+            <i class="fas fa-flag" style="color:#dc3545;"></i>
+        </div>
+        <div class="dash-stat-info">
+            <h3>{{ pending_complaints }}</h3>
+            <p>Pending Complaints</p>
+        </div>
+    </div>
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon" style="background:#d1ecf1;">
+            <i class="fas fa-certificate" style="color:#17a2b8;"></i>
+        </div>
+        <div class="dash-stat-info">
+            <h3>{{ pending_rep_requests }}</h3>
+            <p>Pending Rep Requests</p>
+        </div>
+    </div>
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon" style="background:#f8d7da;">
+            <i class="fas fa-ban" style="color:#dc3545;"></i>
+        </div>
+        <div class="dash-stat-info">
+            <h3>{{ blocked_users }}</h3>
+            <p>Blocked Users</p>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Audit Logs -->
+<div class="dash-table-card">
+    <div class="dash-table-header">
+        <h3>Recent Admin Actions</h3>
+        <a href="{% url 'dashboard:audit_log' %}" style="font-size:0.85rem; color:var(--accent);">View All</a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Admin</th>
+                <th>Action</th>
+                <th>Target User</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in recent_logs %}
+            <tr>
+                <td>{{ log.admin.student_name }}</td>
+                <td>{{ log.action }}</td>
+                <td>{% if log.target_user %}{{ log.target_user.student_name }}{% else %}—{% endif %}</td>
+                <td>{{ log.timestamp|timesince }} ago</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="text-align:center; color:var(--grey-text);">No actions yet</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}My Friends - Social Network{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h2>My Connections</h2>
+    <p class="subtitle">People you are connected with</p>
+</div>
+
+{% if friends %}
+<div class="friends-grid">
+    {% for friend in friends %}
+    <div class="friend-card">
+        <div class="friend-avatar">
+    {% if friend.profile_photo %}
+    <img src="{{ friend.profile_photo.url }}" alt="{{ friend.student_name }}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+    {% else %}
+    {{ friend.student_name|first|upper }}
+    {% endif %}
+</div>
+        <div class="friend-info">
+            <h4><a href="{% url 'accounts:user_profile' friend.pk %}" style="text-decoration:none; color:var(--navy);">{{ friend.student_name }}</a></h4>
+            <p>{{ friend.college_name }}</p>
+            <p>{{ friend.branch }} — Year {{ friend.year }}</p>
+            <p><i class="fas fa-map-marker-alt"></i> {{ friend.city }}</p>
+        </div>
+        {% if friend.is_college_representative %}
+        <div class="rep-badge">
+            <i class="fas fa-certificate"></i> College Representative
+        </div>
+        {% endif %}
+
+        
+
+<a href="{% url 'connections:unfriend' friend.pk %}" class="btn-reject" style="font-size:0.8rem; padding:0.3rem 0.8rem; margin-top:0.5rem; display:inline-block;" onclick="return confirm('Unfriend {{ friend.student_name }}?')">
+    <i class="fas fa-user-minus"></i> Unfriend
+</a>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <i class="fas fa-user-friends"></i>
+    <h3>No connections yet</h3>
+    <p>Start connecting with students across colleges.</p>
+</div>
+{% endif %}
+
+{% endblock %}

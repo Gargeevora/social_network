@@ -1,0 +1,102 @@
+{% extends 'base.html' %} 
+{% block title %}My Profile - Social Network
+{% endblock %} {% block content %}
+
+<div class="profile-container">
+  <!-- Profile Header -->
+  <div class="profile-header-card">
+    <div class="profile-cover">
+      {% if user.cover_photo %}
+      <img
+        src="{{ user.cover_photo.url }}"
+        alt="Cover"
+        style="width: 100%; height: 100%; object-fit: cover"
+      />
+      {% endif %}
+    </div>
+    <div class="profile-header-body">
+      <div class="profile-avatar-large">
+        {% if user.profile_photo %}
+        <img
+          src="{{ user.profile_photo.url }}"
+          alt="Profile"
+          style="
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+          "
+        />
+        {% else %} {{ user.student_name|first|upper }} {% endif %}
+      </div>
+      <div class="profile-header-info">
+        <div class="profile-name-row">
+          <h2>{{ user.student_name }}</h2>
+          {% if user.is_college_representative %}
+          <span class="rep-badge"
+            ><i class="fas fa-certificate"></i> College Representative</span
+          >
+          {% endif %}
+        </div>
+        <p class="profile-college">
+          <i class="fas fa-university"></i> {{ user.college_name }}
+        </p>
+        <p class="profile-meta">
+          <span><i class="fas fa-code-branch"></i> {{ user.branch }}</span>
+          <span><i class="fas fa-layer-group"></i> Year {{ user.year }}</span>
+          <span><i class="fas fa-map-marker-alt"></i> {{ user.city }}</span>
+        </p>
+        <div class="profile-stats">
+          <div class="profile-stat">
+            <span class="stat-number">{{ user_posts.count }}</span>
+            <span class="stat-label">Posts</span>
+          </div>
+          <div class="profile-stat">
+            <span class="stat-number">{{ friends_count }}</span>
+            <span class="stat-label">Friends</span>
+          </div>
+        </div>
+      </div>
+      <a href="{% url 'accounts:edit_profile' %}" class="btn-edit-profile">
+        <i class="fas fa-edit"></i> Edit Profile
+      </a>
+    </div>
+  </div>
+
+  <!-- Posts Grid -->
+  <div class="profile-posts-section">
+    <h3 class="section-title">Posts</h3>
+    {% if user_posts %}
+    <div class="profile-posts-grid">
+      {% for post in user_posts %}
+      <div class="profile-post-item">
+        {% if post.image %}
+        <img src="{{ post.image.url }}" alt="post" />
+        {% else %}
+        <div class="profile-post-text-preview">
+          <p>{{ post.caption|truncatewords:10 }}</p>
+        </div>
+        {% endif %}
+        <div class="profile-post-overlay">
+          <span><i class="fas fa-heart"></i> {{ post.total_likes }}</span>
+          <span><i class="fas fa-comment"></i> {{ post.total_comments }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state" style="padding: 2rem">
+      <i class="fas fa-camera"></i>
+      <h3>No posts yet</h3>
+      <a
+        href="{% url 'posts:create' %}"
+        class="btn-action"
+        style="margin-top: 1rem"
+        >Create Post</a
+      >
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

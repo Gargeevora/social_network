@@ -1,0 +1,70 @@
+{% extends 'base.html' %} {% block title %}Books - Social Network{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h2>Buy Books</h2>
+  <p class="subtitle">Find books listed by students across colleges</p>
+</div>
+
+<!-- Search Bar -->
+<div class="search-bar-container">
+  <form method="GET">
+    <div class="search-bar">
+      <i class="fas fa-search"></i>
+      <input
+        type="text"
+        name="q"
+        placeholder="Search books by name..."
+        value="{{ query }}"
+      />
+      <button type="submit">Search</button>
+    </div>
+  </form>
+</div>
+
+<!-- Sell Button -->
+<div class="section-action">
+  <a href="{% url 'books:sell' %}" class="btn-action">
+    <i class="fas fa-plus"></i> Sell Your Book
+  </a>
+</div>
+
+<!-- Books Grid -->
+{% if books %}
+<div class="books-grid">
+  {% for book in books %}
+  <a href="{% url 'books:detail' book.pk %}" class="book-card">
+    <div class="book-image">
+      {% if book.book_photo %}
+      <img src="{{ book.book_photo.url }}" alt="{{ book.book_name }}" />
+      {% else %}
+      <div class="book-image-placeholder">
+        <i class="fas fa-book"></i>
+      </div>
+      {% endif %}
+    </div>
+    <div class="book-info">
+      <h3>{{ book.book_name }}</h3>
+      <p class="book-publisher">{{ book.publisher_name }}</p>
+      <p class="book-edition">Edition: {{ book.edition_year }}</p>
+      <div class="book-footer">
+        <span class="book-price">₹{{ book.price }}</span>
+        <span class="book-condition condition-{{ book.condition }}"
+          >{{ book.get_condition_display }}</span
+        >
+      </div>
+      <p class="book-seller">
+        <i class="fas fa-user"></i> {{ book.seller.student_name }}
+      </p>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <i class="fas fa-book-open"></i>
+  <h3>No books available</h3>
+  <p>Be the first to list a book for sale.</p>
+  
+</div>
+{% endif %} {% endblock %}

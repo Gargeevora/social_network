@@ -1,0 +1,68 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block title %}User Complaints{% endblock %}
+{% block page_title %}User Complaints{% endblock %}
+
+{% block content %}
+
+<div class="dash-table-card">
+    <div class="dash-table-header">
+        <h3>All User Complaints</h3>
+        <span style="font-size:0.85rem; color:var(--grey-text);">{{ complaints.count }} total</span>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Type</th>
+                <th>Issue</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for complaint in complaints %}
+            <tr>
+                <td>{{ complaint.user.student_name }}</td>
+                <td>{{ complaint.user.email }}</td>
+                <td>{{ complaint.get_complaint_type_display }}</td>
+                <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                    {{ complaint.issue }}
+                </td>
+                <td>
+                    {% if complaint.status == 'pending' %}
+                    <span class="badge badge-warning">Pending</span>
+                    {% else %}
+                    <span class="badge badge-success">Resolved</span>
+                    {% endif %}
+                </td>
+                <td>{{ complaint.created_at|date:"d M Y" }}</td>
+                <td>
+                    {% if complaint.status == 'pending' %}
+                    <a href="{% url 'dashboard:resolve_user_complaint' complaint.pk %}"
+                       class="btn-sm btn-sm-success"
+                       onclick="return confirm('Mark as resolved?')">
+                        <i class="fas fa-check"></i> Resolve
+                    </a>
+                    {% else %}
+                    <span style="color:var(--grey-text); font-size:0.8rem;">Resolved</span>
+                    {% endif %}
+                </td>
+                <td>
+    <a href="{% url 'dashboard:user_complaint_detail' complaint.pk %}" style="color:var(--accent); font-weight:600;">
+        #{{ complaint.pk }} — {{ complaint.user.student_name }}
+    </a>
+</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" style="text-align:center; color:var(--grey-text);">No complaints yet</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

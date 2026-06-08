@@ -1,0 +1,53 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block title %}Audit Log{% endblock %}
+{% block page_title %}Audit Log{% endblock %}
+
+{% block content %}
+
+<div class="dash-table-card">
+    <div class="dash-table-header">
+        <h3>All Admin Actions</h3>
+        <span style="font-size:0.85rem; color:var(--grey-text);">{{ logs.count }} total actions</span>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Admin</th>
+                <th>Action</th>
+                <th>Target User</th>
+                <th>Details</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.admin.student_name }}</td>
+                <td>{{ log.action }}</td>
+                <td>
+                    {% if log.target_user %}
+                    {{ log.target_user.student_name }}
+                    {% else %}
+                    <span style="color:var(--grey-text);">—</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if log.details %}
+                    {{ log.details }}
+                    {% else %}
+                    <span style="color:var(--grey-text);">—</span>
+                    {% endif %}
+                </td>
+                <td>{{ log.timestamp|date:"d M Y H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align:center; color:var(--grey-text);">No actions recorded yet</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

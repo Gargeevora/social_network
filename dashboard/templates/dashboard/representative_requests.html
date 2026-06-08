@@ -1,0 +1,74 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block title %}Representative Requests{% endblock %}
+{% block page_title %}College Representative Requests{% endblock %}
+
+{% block content %}
+
+<div class="dash-table-card">
+    <div class="dash-table-header">
+        <h3>All Representative Requests</h3>
+        <span style="font-size:0.85rem; color:var(--grey-text);">{{ rep_requests.count }} total</span>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Email</th>
+                <th>College</th>
+                <th>Branch</th>
+                <th>Year</th>
+                <th>City</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th>Requested</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rep in rep_requests %}
+            <tr>
+                <td>{{ rep.user.student_name }}</td>
+                <td>{{ rep.user.email }}</td>
+                <td>{{ rep.user.college_name }}</td>
+                <td>{{ rep.user.branch }}</td>
+                <td>Year {{ rep.user.year }}</td>
+                <td>{{ rep.user.city }}</td>
+                <td>{{ rep.user.phone_number }}</td>
+                <td>
+                    {% if rep.status == 'pending' %}
+                    <span class="badge badge-warning">Pending</span>
+                    {% elif rep.status == 'approved' %}
+                    <span class="badge badge-success">Approved</span>
+                    {% else %}
+                    <span class="badge badge-error">Rejected</span>
+                    {% endif %}
+                </td>
+                <td>{{ rep.requested_at|date:"d M Y" }}</td>
+                <td>
+                    {% if rep.status == 'pending' %}
+                    <a href="{% url 'dashboard:approve_representative' rep.pk %}"
+                       class="btn-sm btn-sm-success"
+                       onclick="return confirm('Approve {{ rep.user.student_name }} as college representative?')">
+                        <i class="fas fa-check"></i> Approve
+                    </a>
+                    <a href="{% url 'dashboard:reject_representative' rep.pk %}"
+                       class="btn-sm btn-sm-danger"
+                       onclick="return confirm('Reject this request?')">
+                        <i class="fas fa-times"></i> Reject
+                    </a>
+                    {% else %}
+                    <span style="color:var(--grey-text); font-size:0.8rem;">Handled</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="10" style="text-align:center; color:var(--grey-text);">No requests yet</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

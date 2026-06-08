@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Request Approved - Social Network</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #f4f6fb;
+        font-family: Arial, sans-serif;
+      }
+      .email-wrapper {
+        max-width: 580px;
+        margin: 40px auto;
+        background: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(26, 39, 68, 0.1);
+      }
+      .email-header {
+        background-color: #1a2744;
+        padding: 2rem;
+        text-align: center;
+      }
+      .email-header h1 {
+        color: #ffffff;
+        font-size: 1.5rem;
+        margin: 0;
+      }
+      .email-header h1 span {
+        color: #4f8ef7;
+      }
+      .email-body {
+        padding: 2.5rem 2rem;
+      }
+      .email-body h2 {
+        color: #1a2744;
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+      }
+      .email-body p {
+        color: #555f72;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+      }
+      .success-banner {
+        background: #d4edda;
+        border-left: 4px solid #28a745;
+        padding: 1rem;
+        border-radius: 6px;
+        color: #155724;
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .info-box {
+        background: #f4f6fb;
+        border: 1.5px solid #e0e4ef;
+        border-radius: 10px;
+        padding: 1.2rem 1.5rem;
+        margin: 1.5rem 0;
+      }
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #e0e4ef;
+        font-size: 0.9rem;
+      }
+      .info-row:last-child {
+        border-bottom: none;
+      }
+      .info-row .label {
+        color: #8892a4;
+        font-weight: 500;
+      }
+      .info-row .value {
+        color: #1a2744;
+        font-weight: 600;
+      }
+      .contact-box {
+        background: #1a2744;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        text-align: center;
+      }
+      .contact-box p {
+        color: #e0e4ef;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+      }
+      .contact-number {
+        color: #4f8ef7;
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+      .warning-box {
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 0.8rem 1rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        color: #856404;
+        margin-top: 1rem;
+      }
+      .email-footer {
+        background: #f4f6fb;
+        padding: 1.2rem 2rem;
+        text-align: center;
+        border-top: 1px solid #e0e4ef;
+      }
+      .email-footer p {
+        color: #8892a4;
+        font-size: 0.8rem;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-wrapper">
+      <div class="email-header">
+        <h1>&#127979; <span>Social</span> Network</h1>
+      </div>
+
+      <div class="email-body">
+        <h2>Hi {{ seller.student_name }},</h2>
+
+        <div class="success-banner">
+          ✓ You approved a purchase request for your book!
+        </div>
+
+        <p>Here are the details of the buyer who will contact you:</p>
+
+        <div class="info-box">
+          <div class="info-row">
+            <span class="label">Book</span>
+            <span class="value">{{ book.book_name }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Price</span>
+            <span class="value">₹{{ book.price }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Buyer Name</span>
+            <span class="value">{{ buyer.student_name }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Buyer College</span>
+            <span class="value">{{ buyer.college_name }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Buyer City</span>
+            <span class="value">{{ buyer.city }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Buyer Address</span>
+            <span class="value">{{ buyer.address }}</span>
+          </div>
+        </div>
+
+        <div class="contact-box">
+          <p>Buyer's Contact Number</p>
+          <div class="contact-number">{{ buyer.phone_number }}</div>
+        </div>
+
+        <div class="warning-box">
+          ⚠ Please meet the buyer in a safe public place to complete the
+          transaction.
+        </div>
+      </div>
+
+      <div class="email-footer">
+        <p>© 2026 Social Network. All rights reserved.</p>
+      </div>
+    </div>
+  </body>
+</html>

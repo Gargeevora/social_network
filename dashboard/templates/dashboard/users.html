@@ -1,0 +1,94 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block title %}Users{% endblock %}
+{% block page_title %}User Management{% endblock %}
+
+{% block content %}
+
+<div class="dash-table-card">
+    <div class="dash-table-header">
+        <h3>All Users</h3>
+        <form method="GET" class="dash-search">
+            <input type="text" name="q" placeholder="Search by name..." value="{{ query }}">
+            <button type="submit"><i class="fas fa-search"></i> Search</button>
+        </form>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>College</th>
+                <th>Branch</th>
+                <th>Year</th>
+                <th>City</th>
+                <th>Rep</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.student_name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.college_name }}</td>
+                <td>{{ user.branch }}</td>
+                <td>Year {{ user.year }}</td>
+                <td>{{ user.city }}</td>
+                <td>
+                    {% if user.is_college_representative %}
+                    <span class="badge badge-info">Rep</span>
+                    {% else %}
+                    <span style="color:var(--grey-text);">—</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if user.is_active %}
+                    <span class="badge badge-success">Active</span>
+                    {% else %}
+                    <span class="badge badge-error">Blocked</span>
+                    {% endif %}
+                </td>
+                <td>{{ user.date_joined|date:"d M Y" }}</td>
+                <td>
+                    <a href="{% url 'dashboard:block_user' user.pk %}" 
+                       class="btn-sm {% if user.is_active %}btn-sm-danger{% else %}btn-sm-success{% endif %}"
+                       onclick="return confirm('{% if user.is_active %}Block{% else %}Unblock{% endif %} {{ user.student_name }}?')">
+                        {% if user.is_active %}
+                        <i class="fas fa-ban"></i> Block
+                        {% else %}
+                        <i class="fas fa-check"></i> Unblock
+                        {% endif %}
+                    </a>
+                </td>
+                <td>
+    <a href="{% url 'dashboard:block_user' user.pk %}" 
+       class="btn-sm {% if user.is_active %}btn-sm-danger{% else %}btn-sm-success{% endif %}"
+       onclick="return confirm('{% if user.is_active %}Block{% else %}Unblock{% endif %} {{ user.student_name }}?')">
+        {% if user.is_active %}
+        <i class="fas fa-ban"></i> Block
+        {% else %}
+        <i class="fas fa-check"></i> Unblock
+        {% endif %}
+    </a>
+    {% if user.is_college_representative %}
+    <a href="{% url 'dashboard:remove_representative' user.pk %}"
+       class="btn-sm btn-sm-warning"
+       onclick="return confirm('Remove representative access from {{ user.student_name }}?')">
+        <i class="fas fa-certificate"></i> Remove Rep
+    </a>
+    {% endif %}
+</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="10" style="text-align:center; color:var(--grey-text);">No users found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

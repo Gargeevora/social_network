@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ profile_user.student_name }} - Social Network{% endblock %}
+
+{% block content %}
+
+<div class="back-link">
+  <a href="{% url 'posts:feed' %}"><i class="fas fa-arrow-left"></i> Back to Feed</a>
+</div>
+
+<div class="profile-container">
+  <!-- Profile Header -->
+  <div class="profile-header-card">
+    <div class="profile-cover">
+      {% if profile_user.cover_photo %}
+      <img src="{{ profile_user.cover_photo.url }}" alt="Cover" style="width:100%; height:100%; object-fit:cover;">
+      {% endif %}
+    </div>
+    <div class="profile-header-body">
+      <div class="profile-avatar-large">
+        {% if profile_user.profile_photo %}
+        <img src="{{ profile_user.profile_photo.url }}" alt="Profile" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+        {% else %}
+        {{ profile_user.student_name|first|upper }}
+        {% endif %}
+      </div>
+      <div class="profile-header-info">
+        <div class="profile-name-row">
+          <h2>{{ profile_user.student_name }}</h2>
+          {% if profile_user.is_college_representative %}
+          <span class="rep-badge"><i class="fas fa-certificate"></i> College Representative</span>
+          {% endif %}
+        </div>
+        <p class="profile-college"><i class="fas fa-university"></i> {{ profile_user.college_name }}</p>
+        <p class="profile-meta">
+          <span><i class="fas fa-code-branch"></i> {{ profile_user.branch }}</span>
+          <span><i class="fas fa-layer-group"></i> Year {{ profile_user.year }}</span>
+          <span><i class="fas fa-map-marker-alt"></i> {{ profile_user.city }}</span>
+        </p>
+        <div class="profile-stats">
+          <div class="profile-stat">
+            <span class="stat-number">{{ user_posts.count }}</span>
+            <span class="stat-label">Posts</span>
+          </div>
+          <div class="profile-stat">
+            <span class="stat-number">{{ friends_count }}</span>
+            <span class="stat-label">Friends</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Connection Button -->
+      <div class="profile-action">
+        {% if connection_status == 'accepted' %}
+        <button class="btn-connected" disabled>
+          <i class="fas fa-user-check"></i> Connected
+        </button>
+        {% elif connection_status == 'pending' %}
+        <button class="btn-pending" disabled>
+          <i class="fas fa-clock"></i> Request Sent
+        </button>
+        {% elif connection_status == 'received' %}
+        <a href="{% url 'connections:accept' connection.pk %}" class="btn-approve">
+          <i class="fas fa-check"></i> Accept Request
+        </a>
+        {% else %}
+        <a href="{% url 'connections:send_request' profile_user.pk %}" class="btn-connect-profile">
+          <i class="fas fa-user-plus"></i> Connect
+        </a>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+   
+
+  <!-- Posts Grid -->
+  <div class="profile-posts-section">
+    <h3 class="section-title">Posts</h3>
+    {% if user_posts %}
+    <div class="profile-posts-grid">
+      {% for post in user_posts %}
+      <div class="profile-post-item">
+        {% if post.image %}
+        <img src="{{ post.image.url }}" alt="post">
+        {% else %}
+        <div class="profile-post-text-preview">
+          <p>{{ post.caption|truncatewords:10 }}</p>
+        </div>
+        {% endif %}
+        <div class="profile-post-overlay">
+          <span><i class="fas fa-heart"></i> {{ post.total_likes }}</span>
+          <span><i class="fas fa-comment"></i> {{ post.total_comments }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state" style="padding:2rem;">
+      <i class="fas fa-camera"></i>
+      <h3>No posts yet</h3>
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleComplaintForm() {
+    const form = document.getElementById('complaintForm');
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+</script>
+{% endblock %}

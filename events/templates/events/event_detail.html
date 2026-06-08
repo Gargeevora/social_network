@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ event.event_name }} - Social Network{% endblock %}
+
+{% block content %}
+
+<div class="back-link">
+    <a href="{% url 'events:list' %}"><i class="fas fa-arrow-left"></i> Back to Events</a>
+</div>
+
+<div class="event-detail-container">
+
+    <!-- Cover Image -->
+    <div class="event-detail-cover">
+        {% if event.cover_image %}
+        <img src="{{ event.cover_image.url }}" alt="{{ event.event_name }}">
+        {% else %}
+        <div class="event-detail-cover-placeholder">
+            <i class="fas fa-calendar-alt"></i>
+        </div>
+        {% endif %}
+
+        {% if event.is_registration_open %}
+        <span class="event-badge open">Registration Open</span>
+        {% else %}
+        <span class="event-badge closed">Registration Closed</span>
+        {% endif %}
+    </div>
+
+    <!-- Event Details -->
+    <div class="event-detail-body">
+
+        <div class="event-organizer" style="margin-bottom: 0.8rem;">
+            <i class="fas fa-university"></i>
+            <span>{{ event.organizer.college_name }}</span>
+            <span style="color: var(--grey-text); margin-left: 0.5rem;">by {{ event.organizer.student_name }}</span>
+        </div>
+
+        <h2 class="event-detail-title">{{ event.event_name }}</h2>
+
+        <p class="event-detail-about">{{ event.about }}</p>
+
+        <div class="event-detail-info">
+            <div class="event-info-card">
+                <i class="fas fa-calendar"></i>
+                <div>
+                    <span class="info-label">Event Date</span>
+                    <span class="info-value">{{ event.event_date|date:"d M Y" }}</span>
+                </div>
+            </div>
+            <div class="event-info-card">
+                <i class="fas fa-calendar-times"></i>
+                <div>
+                    <span class="info-label">Last Registration Date</span>
+                    <span class="info-value">{{ event.last_registration_date|date:"d M Y" }}</span>
+                </div>
+            </div>
+            <div class="event-info-card">
+                <i class="fas fa-map-marker-alt"></i>
+                <div>
+                    <span class="info-label">Place</span>
+                    <span class="info-value">{{ event.place }}</span>
+                </div>
+            </div>
+            <div class="event-info-card">
+                <i class="fas fa-ticket-alt"></i>
+                <div>
+                    <span class="info-label">Entry Fees</span>
+                    <span class="info-value">{% if event.fees == 0 %}Free{% else %}₹{{ event.fees }}{% endif %}</span>
+                </div>
+            </div>
+            <div class="event-info-card">
+                <i class="fas fa-phone"></i>
+                <div>
+                    <span class="info-label">Contact for Query</span>
+                    <span class="info-value">{{ event.contact_number }}</span>
+                </div>
+            </div>
+        </div>
+
+        {% if event.registration_link %}
+        <a href="{{ event.registration_link }}" target="_blank" class="btn-register-event">
+            <i class="fas fa-external-link-alt"></i> Register for this Event
+        </a>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}

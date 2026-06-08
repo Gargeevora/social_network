@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Access Required - Social Network{% endblock %}
+
+{% block content %}
+
+<div class="access-container">
+
+    <div class="access-icon">
+        <i class="fas fa-lock"></i>
+    </div>
+
+    <h2>College Representative Access Required</h2>
+    <p class="access-desc">Only verified College Representatives can announce events on Social Network. This ensures that only authentic college events are posted on the platform.</p>
+
+    <div class="access-info-box">
+        <h4><i class="fas fa-info-circle"></i> How it works</h4>
+        <div class="access-steps">
+            <div class="access-step">
+                <span class="step-number">1</span>
+                <span>Click the "Request Access" button below</span>
+            </div>
+            <div class="access-step">
+                <span class="step-number">2</span>
+                <span>Your details will be sent to the admin for review</span>
+            </div>
+            <div class="access-step">
+                <span class="step-number">3</span>
+                <span>Once approved, you will be able to announce events</span>
+            </div>
+            <div class="access-step">
+                <span class="step-number">4</span>
+                <span>Your profile will show "College Representative" badge</span>
+            </div>
+        </div>
+    </div>
+
+    {% if already_requested %}
+    <div class="access-requested-badge">
+        <i class="fas fa-clock"></i>
+        Your request is pending admin approval. You will be notified once approved.
+    </div>
+    {% else %}
+    <a href="{% url 'events:request_representative' %}" class="btn-request-access">
+        <i class="fas fa-paper-plane"></i> Request Access
+    </a>
+    {% endif %}
+
+</div>
+
+{% endblock %}

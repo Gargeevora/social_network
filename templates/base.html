@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Social Network{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body class="{% block body_class %}{% endblock %}">
+    <!-- Navbar -->
+    <nav class="navbar">
+    <div class="nav-container">
+
+        <!-- Logo -->
+        <a href="{% url 'posts:feed' %}" class="nav-logo">
+            <i class="fas fa-graduation-cap"></i> Social Network
+        </a>
+
+        <!-- Center Links -->
+        <ul class="nav-links">
+            <li><a href="{% url 'posts:feed' %}">Home</a></li>
+            <li><a href="{% url 'books:list' %}">Books</a></li>
+            <li><a href="{% url 'events:list' %}">Events</a></li>
+        </ul>
+
+        <!-- Right Side -->
+        <div class="nav-right">
+            {% if user.is_authenticated %}
+
+            <!-- Create Post -->
+            <a href="{% url 'posts:create' %}" class="nav-icon-btn" title="Create Post">
+                <i class="fas fa-plus-square"></i>
+            </a>
+
+            <!-- Friend Requests -->
+            <a href="{% url 'connections:requests' %}" class="nav-icon-btn" title="Friend Requests">
+                <i class="fas fa-user-plus"></i>
+            </a>
+
+            <!-- Notifications Bell -->
+            <a href="{% url 'notifications:list' %}" class="nav-icon-btn nav-bell" title="Notifications">
+                <i class="fas fa-bell"></i>
+                {% if unread_notifications_count > 0 %}
+                <span class="bell-badge">{{ unread_notifications_count }}</span>
+                {% endif %}
+            </a>
+
+            <!-- Profile Dropdown -->
+            <div class="nav-profile-dropdown">
+                <button class="nav-profile-btn">
+                    <div class="nav-avatar">{{ user.student_name|first|upper }}</div>
+                </button>
+                <div class="profile-dropdown-menu" id="profileDropdown">
+                    <div class="dropdown-header">
+                        <strong>{{ user.student_name }}</strong>
+                        <small>{{ user.college_name }}</small>
+                        {% if user.is_college_representative %}
+                        <span class="rep-badge" style="margin-top:0.3rem;">
+                            <i class="fas fa-certificate"></i> College Representative
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <a href="{% url 'accounts:profile' %}"><i class="fas fa-user"></i> My Profile</a>
+                    <a href="{% url 'connections:friends' %}"><i class="fas fa-user-friends"></i> My Friends</a>
+                    <a href="{% url 'books:my_books' %}"><i class="fas fa-book"></i> My Books</a>
+                    <div class="dropdown-divider"></div>
+                    {% if user.is_superuser %}
+<div class="dropdown-divider"></div>
+<a href="{% url 'dashboard:home' %}" style="color:#020251;">
+    <i class="fas fa-tachometer-alt" style="color:#041168;"></i> Admin Dashboard
+</a>
+{% endif %}
+<a href="{% url 'accounts:report_issue' %}"><i class="fas fa-flag"></i> Report an Issue</a>
+                    <a href="{% url 'accounts:logout' %}" class="dropdown-logout">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                  
+                </div>
+                
+            </div>
+
+            {% else %}
+            <a href="{% url 'accounts:login' %}" class="btn-login">Login</a>
+            <a href="{% url 'accounts:register' %}" class="btn-register">Register</a>
+            {% endif %}
+        </div>
+
+    </div>
+</nav>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="messages-container">
+      {% for message in messages %}
+      <div class="message {{ message.tags }}">
+        {{ message }}
+        <span class="message-close" onclick="this.parentElement.remove()"
+          >×</span
+        >
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="main-content">{% block content %}{% endblock %}</main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-left">
+          <h3><i class="fas fa-graduation-cap"></i> Social Network</h3>
+          <p>Connecting students across colleges.</p>
+        </div>
+        <div class="footer-links">
+          <a href="{% url 'books:list' %}">Books</a>
+          <a href="{% url 'events:list' %}">Events</a>
+          {% if not user.is_authenticated %}
+          <a href="{% url 'accounts:login' %}">Login</a>
+          <a href="{% url 'accounts:register' %}">Register</a>
+          {% endif %}
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Social Network. All rights reserved.</p>
+      </div>
+      <a href="{% url 'terms' %}">Terms & Conditions</a>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

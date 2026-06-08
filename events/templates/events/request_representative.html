@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Request Representative Access - Social Network{% endblock %}
+
+{% block content %}
+
+<div class="back-link">
+    <a href="{% url 'events:list' %}"><i class="fas fa-arrow-left"></i> Back to Events</a>
+</div>
+
+<div class="form-container" style="max-width: 600px;">
+
+    <div class="announce-header">
+        <div class="announce-icon">
+            <i class="fas fa-user-tie"></i>
+        </div>
+        <div>
+            <h2>Request Representative Access</h2>
+            <p class="subtitle">Fill in the form below to request college representative access</p>
+        </div>
+    </div>
+
+    <div class="rep-user-info">
+        <h4>Your Details (will be sent to admin)</h4>
+        <div class="rep-info-grid">
+            <div class="rep-info-item">
+                <span class="label">Name</span>
+                <span class="value">{{ request.user.student_name }}</span>
+            </div>
+            <div class="rep-info-item">
+                <span class="label">Email</span>
+                <span class="value">{{ request.user.email }}</span>
+            </div>
+            <div class="rep-info-item">
+                <span class="label">College</span>
+                <span class="value">{{ request.user.college_name }}</span>
+            </div>
+            <div class="rep-info-item">
+                <span class="label">Branch</span>
+                <span class="value">{{ request.user.branch }}</span>
+            </div>
+            <div class="rep-info-item">
+                <span class="label">Year</span>
+                <span class="value">{{ request.user.year }}</span>
+            </div>
+            <div class="rep-info-item">
+                <span class="label">Phone</span>
+                <span class="value">{{ request.user.phone_number }}</span>
+            </div>
+        </div>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="id_reason">Why do you want to become a College Representative?</label>
+            <textarea
+                name="reason"
+                id="id_reason"
+                placeholder="Briefly explain your role in your college and why you want to announce events..."
+                rows="4"
+                required
+            ></textarea>
+            {% if form.reason.errors %}
+            <span class="field-error">{{ form.reason.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn-primary">
+            <i class="fas fa-paper-plane"></i> Send Request to Admin
+        </button>
+    </form>
+
+</div>
+
+{% endblock %}

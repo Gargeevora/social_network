@@ -7,4 +7,5 @@ media/
 *.log
 .DS_Store
 venv/
+staticfiles/
 

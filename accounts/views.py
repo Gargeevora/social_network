@@ -19,6 +19,13 @@ def register_view(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
+            email = form.cleaned_data.get('email')
+            
+            # if user exists but unverified delete and allow re-register
+            existing_user = CustomUser.objects.filter(email=email, is_email_verified=False).first()
+            if existing_user:
+                existing_user.delete()
+            
             user = form.save(commit=False)
             user.is_email_verified = False
             user.save()
@@ -29,7 +36,6 @@ def register_view(request):
         form = RegisterForm()
 
     return render(request, 'accounts/register.html', {'form': form})
-
 
 def login_view(request):
     if request.user.is_authenticated:

@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import dj_database_url
 
 load_dotenv()
 
@@ -88,7 +89,7 @@ WSGI_APPLICATION = 'social_network.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
+'''DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv('DB_NAME'),
@@ -101,6 +102,10 @@ DATABASES = {
             'connect_timeout': 10,
         },
     }
+}'''
+
+DATABASES = {
+    'default': dj_database_url.parse(os.getenv('DATABASE_URL'))
 }
 
 

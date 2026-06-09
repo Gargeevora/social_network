@@ -22,9 +22,7 @@ def register_view(request):
             email = form.cleaned_data.get('email')
             
             # if user exists but unverified delete and allow re-register
-            existing_user = CustomUser.objects.filter(email=email, is_email_verified=False).first()
-            if existing_user:
-                existing_user.delete()
+            CustomUser.objects.filter(email=email, is_email_verified=False).delete()
             
             user = form.save(commit=False)
             user.is_email_verified = False

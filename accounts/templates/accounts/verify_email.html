@@ -39,4 +39,7 @@
     <p>Already verified? <a href="{% url 'accounts:login' %}">Login here</a></p>
   </div>
 </div>
+<div class="form-footer" style="margin-top:1rem;">
+    <p>Didn't receive the email? <a href="{% url 'accounts:resend_verification' %}">Resend verification email</a></p>
+</div>
 {% endblock %}

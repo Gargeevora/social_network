@@ -13,4 +13,5 @@ urlpatterns = [
     path('profile/<int:user_id>/', views.user_profile_view, name='user_profile'),
     path('edit-profile/', views.edit_profile_view, name='edit_profile'),
     path('report/', views.report_issue_view, name='report_issue'),
+    path('resend-verification/', views.resend_verification_email_view, name='resend_verification'),
 ]

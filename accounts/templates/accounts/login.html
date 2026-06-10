@@ -53,6 +53,9 @@
       <a href="{% url 'accounts:register' %}">Register here</a>
     </p>
   </div>
+  <div class="form-footer">
+    <p>Need to verify your email? <a href="{% url 'accounts:resend_verification' %}">Resend verification email</a></p>
+</div>
 </div>
 {% endblock %} {% block extra_js %}
 <script>

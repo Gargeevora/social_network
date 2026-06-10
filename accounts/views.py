@@ -183,3 +183,16 @@ def report_issue_view(request):
         return redirect('posts:feed')
     
     return render(request, 'accounts/report_issue.html')
+
+def resend_verification_email_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        try:
+            user = CustomUser.objects.get(email=email, is_email_verified=False)
+            send_verification_email(request, user)
+            messages.success(request, 'Verification email sent. Please check your inbox.')
+        except CustomUser.DoesNotExist:
+            messages.error(request, 'No unverified account found with this email.')
+        return redirect('accounts:resend_verification')
+    
+    return render(request, 'accounts/resend_verification.html')

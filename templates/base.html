@@ -23,7 +23,8 @@
   </head>
   <body class="{% block body_class %}{% endblock %}">
     <!-- Navbar -->
-    <nav class="navbar">
+    <!-- Navbar -->
+<nav class="navbar">
     <div class="nav-container">
 
         <!-- Logo -->
@@ -37,36 +38,6 @@
             <li><a href="{% url 'books:list' %}">Books</a></li>
             <li><a href="{% url 'events:list' %}">Events</a></li>
         </ul>
-
-                    <!-- Hamburger Button -->
-                    <button class="hamburger-btn" id="hamburgerBtn">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                </div>
-            </nav>
-
-            <!-- Mobile Menu -->
-            <div class="mobile-menu" id="mobileMenu">
-                <a href="{% url 'posts:feed' %}">Home</a>
-                <a href="{% url 'books:list' %}">Books</a>
-                <a href="{% url 'events:list' %}">Events</a>
-                {% if user.is_authenticated %}
-                <a href="{% url 'posts:create' %}">Create Post</a>
-                <a href="{% url 'connections:requests' %}">Friend Requests</a>
-                <a href="{% url 'notifications:list' %}">Notifications</a>
-                <a href="{% url 'accounts:profile' %}">My Profile</a>
-                <a href="{% url 'connections:friends' %}">My Friends</a>
-                <a href="{% url 'books:my_books' %}">My Books</a>
-                {% if user.is_superuser %}
-                <a href="{% url 'dashboard:home' %}">Admin Dashboard</a>
-                {% endif %}
-                <a href="{% url 'accounts:logout' %}" style="color:#dc3545;">Logout</a>
-                {% else %}
-                <a href="{% url 'accounts:login' %}">Login</a>
-                <a href="{% url 'accounts:register' %}">Register</a>
-                {% endif %}
-            </div>
-
 
         <!-- Right Side -->
         <div class="nav-right">
@@ -109,20 +80,18 @@
                     <a href="{% url 'accounts:profile' %}"><i class="fas fa-user"></i> My Profile</a>
                     <a href="{% url 'connections:friends' %}"><i class="fas fa-user-friends"></i> My Friends</a>
                     <a href="{% url 'books:my_books' %}"><i class="fas fa-book"></i> My Books</a>
-                    <div class="dropdown-divider"></div>
                     {% if user.is_superuser %}
-<div class="dropdown-divider"></div>
-<a href="{% url 'dashboard:home' %}" style="color:#020251;">
-    <i class="fas fa-tachometer-alt" style="color:#041168;"></i> Admin Dashboard
-</a>
-{% endif %}
-<a href="{% url 'accounts:report_issue' %}"><i class="fas fa-flag"></i> Report an Issue</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{% url 'dashboard:home' %}">
+                        <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+                    </a>
+                    {% endif %}
+                    <div class="dropdown-divider"></div>
+                    <a href="{% url 'accounts:report_issue' %}"><i class="fas fa-flag"></i> Report an Issue</a>
                     <a href="{% url 'accounts:logout' %}" class="dropdown-logout">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
-                  
                 </div>
-                
             </div>
 
             {% else %}
@@ -131,8 +100,35 @@
             {% endif %}
         </div>
 
+        <!-- Hamburger Button -->
+        <button class="hamburger-btn" id="hamburgerBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+
     </div>
 </nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+    <a href="{% url 'posts:feed' %}">Home</a>
+    <a href="{% url 'books:list' %}">Books</a>
+    <a href="{% url 'events:list' %}">Events</a>
+    {% if user.is_authenticated %}
+    <a href="{% url 'posts:create' %}">Create Post</a>
+    <a href="{% url 'connections:requests' %}">Friend Requests</a>
+    <a href="{% url 'notifications:list' %}">Notifications</a>
+    <a href="{% url 'accounts:profile' %}">My Profile</a>
+    <a href="{% url 'connections:friends' %}">My Friends</a>
+    <a href="{% url 'books:my_books' %}">My Books</a>
+    {% if user.is_superuser %}
+    <a href="{% url 'dashboard:home' %}">Admin Dashboard</a>
+    {% endif %}
+    <a href="{% url 'accounts:logout' %}" style="color:#dc3545;">Logout</a>
+    {% else %}
+    <a href="{% url 'accounts:login' %}">Login</a>
+    <a href="{% url 'accounts:register' %}">Register</a>
+    {% endif %}
+</div>
 
     <!-- Messages -->
     {% if messages %}

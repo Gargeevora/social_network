@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'connections',
     'notifications',
     'dashboard',
+    'cloudinary_storage',
+    'cloudinary',
   
 ]
 
@@ -185,5 +187,13 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 CSRF_COOKIE_HTTPONLY = False  # needs to be False for JS to read it
 CSRF_COOKIE_SECURE = False  # set True when deploying with HTTPS
 CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'http://localhost:8000']
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 

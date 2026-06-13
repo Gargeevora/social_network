@@ -78,11 +78,31 @@
             </div>
         </div>
 
-        {% if event.registration_link %}
-        <a href="{{ event.registration_link }}" target="_blank" class="btn-register-event">
-            <i class="fas fa-external-link-alt"></i> Register for this Event
-        </a>
+        <div style="display:flex; gap:1rem; flex-wrap:wrap; align-items:center;">
+    {% if event.registration_link %}
+    <a href="{{ event.registration_link }}" target="_blank" class="btn-register-event">
+        <i class="fas fa-external-link-alt"></i> Register for this Event
+    </a>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+    <a href="{% url 'events:toggle_interest' event.pk %}" 
+       class="btn-sm {% if is_interested %}btn-sm-success{% else %}btn-sm-info{% endif %}"
+       style="padding:0.9rem 1.5rem; font-size:0.95rem;">
+        {% if is_interested %}
+        <i class="fas fa-check-circle"></i> Interested
+        {% else %}
+        <i class="far fa-circle"></i> I'm Interested
         {% endif %}
+    </a>
+    {% endif %}
+
+    {% if user == event.organizer %}
+    <a href="{% url 'events:edit' event.pk %}" class="btn-sm btn-sm-warning" style="padding:0.9rem 1.5rem; font-size:0.95rem;">
+        <i class="fas fa-edit"></i> Edit Event
+    </a>
+    {% endif %}
+</div>
 
     </div>
 </div>

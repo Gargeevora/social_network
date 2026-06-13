@@ -11,4 +11,6 @@ urlpatterns = [
     path('requests/<int:request_id>/approve/', views.approve_request_view, name='approve_request'),
     path('requests/<int:request_id>/reject/', views.reject_request_view, name='reject_request'),
     path('my-books/', views.my_books_view, name='my_books'),
+    path('<int:pk>/delete/', views.delete_book_view, name='delete'),
+    path('<int:pk>/edit/', views.edit_book_view, name='edit'),
 ]

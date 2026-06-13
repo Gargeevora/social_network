@@ -4,6 +4,7 @@ from django.utils import timezone
 
 
 class EventForm(forms.ModelForm):
+    cover_image = forms.ImageField(required=False)
     class Meta:
         model = Event
         fields = [

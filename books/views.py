@@ -245,4 +245,25 @@ def my_books_view(request):
         'purchase_history': purchase_history,
     })
 
+@login_required
+def delete_book_view(request, pk):
+    book = get_object_or_404(Book, pk=pk, seller=request.user)
+    book.delete()
+    messages.success(request, 'Book listing removed successfully.')
+    return redirect('books:my_books')
+
+@login_required
+def edit_book_view(request, pk):
+    book = get_object_or_404(Book, pk=pk, seller=request.user)
+    
+    if request.method == 'POST':
+        form = SellBookForm(request.POST, request.FILES, instance=book)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Book details updated successfully.')
+            return redirect('books:my_books')
+    else:
+        form = SellBookForm(instance=book)
+    
+    return render(request, 'books/edit_book.html', {'form': form, 'book': book})
     

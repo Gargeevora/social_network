@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Book - Social Network{% endblock %}
+
+{% block content %}
+
+<div class="back-link">
+    <a href="{% url 'books:my_books' %}"><i class="fas fa-arrow-left"></i> Back to My Books</a>
+</div>
+
+<div class="form-container" style="max-width: 600px;">
+
+    <h2>Edit Book Listing</h2>
+    <p class="subtitle">Update the details of your book</p>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="id_book_name">Book Name</label>
+            <input
+                type="text"
+                name="book_name"
+                id="id_book_name"
+                value="{{ form.book_name.value|default:'' }}"
+                required
+            >
+            {% if form.book_name.errors %}
+            <span class="field-error">{{ form.book_name.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_publisher_name">Publisher Name</label>
+                <input
+                    type="text"
+                    name="publisher_name"
+                    id="id_publisher_name"
+                    value="{{ form.publisher_name.value|default:'' }}"
+                    required
+                >
+                {% if form.publisher_name.errors %}
+                <span class="field-error">{{ form.publisher_name.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_edition_year">Edition Year</label>
+                <input
+                    type="number"
+                    name="edition_year"
+                    id="id_edition_year"
+                    value="{{ form.edition_year.value|default:'' }}"
+                    required
+                >
+                {% if form.edition_year.errors %}
+                <span class="field-error">{{ form.edition_year.errors.0 }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_condition">Book Condition</label>
+                <select name="condition" id="id_condition" required>
+                    <option value="new" {% if form.condition.value == 'new' %}selected{% endif %}>New</option>
+                    <option value="good" {% if form.condition.value == 'good' %}selected{% endif %}>Good</option>
+                    <option value="fair" {% if form.condition.value == 'fair' %}selected{% endif %}>Fair</option>
+                    <option value="poor" {% if form.condition.value == 'poor' %}selected{% endif %}>Poor</option>
+                </select>
+                {% if form.condition.errors %}
+                <span class="field-error">{{ form.condition.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_price">Price (₹)</label>
+                <input
+                    type="number"
+                    name="price"
+                    id="id_price"
+                    value="{{ form.price.value|default:'' }}"
+                    required
+                >
+                {% if form.price.errors %}
+                <span class="field-error">{{ form.price.errors.0 }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="id_description">Description (optional)</label>
+            <textarea
+                name="description"
+                id="id_description"
+                rows="3"
+            >{{ form.description.value|default:'' }}</textarea>
+            {% if form.description.errors %}
+            <span class="field-error">{{ form.description.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_book_photo">Book Photo</label>
+            {% if book.book_photo %}
+            <img src="{{ book.book_photo.url }}" alt="{{ book.book_name }}" style="width:150px; border-radius:8px; margin-bottom:0.5rem;">
+            {% endif %}
+            <input
+                type="file"
+                name="book_photo"
+                id="id_book_photo"
+                accept="image/*"
+            >
+            <small class="field-hint">Leave empty to keep current photo</small>
+            {% if form.book_photo.errors %}
+            <span class="field-error">{{ form.book_photo.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn-primary">
+            <i class="fas fa-save"></i> Save Changes
+        </button>
+
+    </form>
+</div>
+
+{% endblock %}

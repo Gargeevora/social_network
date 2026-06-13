@@ -6,6 +6,8 @@ from django.conf import settings
 from django.utils import timezone
 from .models import Event, RepresentativeRequest
 from .forms import EventForm, RepresentativeRequestForm
+from .models import Event, RepresentativeRequest, EventInterest
+from notifications.utils import create_notification
 
 
 def event_list_view(request):
@@ -25,8 +27,14 @@ def event_list_view(request):
 
 def event_detail_view(request, pk):
     event = get_object_or_404(Event, pk=pk)
-    return render(request, 'events/event_detail.html', {'event': event})
-
+    is_interested = False
+    if request.user.is_authenticated:
+        is_interested = EventInterest.objects.filter(event=event, user=request.user).exists()
+    
+    return render(request, 'events/event_detail.html', {
+        'event': event,
+        'is_interested': is_interested,
+    })
 
 @login_required
 def announce_event_view(request):
@@ -104,3 +112,45 @@ And update the request status to Approved.
         form = RepresentativeRequestForm()
 
     return render(request, 'events/request_representative.html', {'form': form})
+
+
+@login_required
+def toggle_interest_view(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+    interest, created = EventInterest.objects.get_or_create(event=event, user=request.user)
+    
+    if not created:
+        interest.delete()
+        messages.info(request, 'Removed from interested events.')
+    else:
+        messages.success(request, 'Marked as interested. You will be notified of any updates.')
+    
+    return redirect('events:detail', pk=pk)
+
+
+@login_required
+def edit_event_view(request, pk):
+    event = get_object_or_404(Event, pk=pk, organizer=request.user)
+    
+    if request.method == 'POST':
+        form = EventForm(request.POST, request.FILES, instance=event)
+        if form.is_valid():
+            form.save()
+            
+            # notify interested users
+            interested_users = EventInterest.objects.filter(event=event).select_related('user')
+            for interest in interested_users:
+                create_notification(
+                    recipient=interest.user,
+                    sender=request.user,
+                    notification_type='comment',
+                    message=f'The event "{event.event_name}" has been updated. Check the latest details.',
+                    link=f'/events/{event.pk}/'
+                )
+            
+            messages.success(request, 'Event updated successfully. Interested users have been notified.')
+            return redirect('events:detail', pk=pk)
+    else:
+        form = EventForm(instance=event)
+    
+    return render(request, 'events/edit_event.html', {'form': form, 'event': event})

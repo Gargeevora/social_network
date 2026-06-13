@@ -43,3 +43,15 @@ class Event(models.Model):
 
     def is_upcoming(self):
         return timezone.now().date() <= self.event_date
+    
+
+class EventInterest(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='interested_users')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='interested_events')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ('event', 'user')
+
+    def __str__(self):
+        return f"{self.user.student_name} interested in {self.event.event_name}"

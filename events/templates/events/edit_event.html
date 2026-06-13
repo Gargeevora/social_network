@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Event - Social Network{% endblock %}
+
+{% block content %}
+
+<div class="back-link">
+    <a href="{% url 'events:detail' event.pk %}"><i class="fas fa-arrow-left"></i> Back to Event</a>
+</div>
+
+<div class="announce-container">
+
+    <div class="announce-header">
+        <div class="announce-icon">
+            <i class="fas fa-edit"></i>
+        </div>
+        <div>
+            <h2>Edit Event</h2>
+            <p class="subtitle">Update your event details. Interested users will be notified.</p>
+        </div>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="id_event_name">Event Name</label>
+            <input
+                type="text"
+                name="event_name"
+                id="id_event_name"
+                value="{{ form.event_name.value|default:'' }}"
+                required
+            >
+            {% if form.event_name.errors %}
+            <span class="field-error">{{ form.event_name.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_about">About the Event</label>
+            <textarea
+                name="about"
+                id="id_about"
+                rows="4"
+                required
+            >{{ form.about.value|default:'' }}</textarea>
+            {% if form.about.errors %}
+            <span class="field-error">{{ form.about.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label>Event Cover Image / Poster</label>
+            {% if event.cover_image %}
+            <img src="{{ event.cover_image.url }}" alt="{{ event.event_name }}" style="width:100%; border-radius:10px; margin-bottom:0.5rem; max-height:200px; object-fit:cover;">
+            {% endif %}
+            <input
+                type="file"
+                name="cover_image"
+                id="id_cover_image"
+                accept="image/*"
+            >
+            <small class="field-hint">Leave empty to keep current image</small>
+            {% if form.cover_image.errors %}
+            <span class="field-error">{{ form.cover_image.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_place">Event Place</label>
+            <input
+                type="text"
+                name="place"
+                id="id_place"
+                value="{{ form.place.value|default:'' }}"
+                required
+            >
+            {% if form.place.errors %}
+            <span class="field-error">{{ form.place.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_event_date">Event Date</label>
+                <input
+                    type="date"
+                    name="event_date"
+                    id="id_event_date"
+                    value="{{ form.event_date.value|date:'Y-m-d' }}"
+                    required
+                >
+                {% if form.event_date.errors %}
+                <span class="field-error">{{ form.event_date.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_last_registration_date">Last Registration Date</label>
+                <input
+                    type="date"
+                    name="last_registration_date"
+                    id="id_last_registration_date"
+                    value="{{ form.last_registration_date.value|date:'Y-m-d' }}"
+                    required
+                >
+                {% if form.last_registration_date.errors %}
+                <span class="field-error">{{ form.last_registration_date.errors.0 }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_fees">Entry Fees (₹)</label>
+                <input
+                    type="number"
+                    name="fees"
+                    id="id_fees"
+                    value="{{ form.fees.value|default:'0' }}"
+                    min="0"
+                    required
+                >
+                {% if form.fees.errors %}
+                <span class="field-error">{{ form.fees.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_contact_number">Contact Number for Queries</label>
+                <input
+                    type="tel"
+                    name="contact_number"
+                    id="id_contact_number"
+                    value="{{ form.contact_number.value|default:'' }}"
+                    required
+                >
+                {% if form.contact_number.errors %}
+                <span class="field-error">{{ form.contact_number.errors.0 }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="id_registration_link">Registration Link (optional)</label>
+            <input
+                type="url"
+                name="registration_link"
+                id="id_registration_link"
+                value="{{ form.registration_link.value|default:'' }}"
+            >
+            {% if form.registration_link.errors %}
+            <span class="field-error">{{ form.registration_link.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn-primary">
+            <i class="fas fa-save"></i> Save Changes & Notify Interested Users
+        </button>
+
+    </form>
+</div>
+
+{% endblock %}

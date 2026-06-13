@@ -32,7 +32,7 @@ class SellBookForm(forms.ModelForm):
 
     def clean_book_photo(self):
         photo = self.cleaned_data.get('book_photo')
-        if not photo:
+        if not photo and not self.instance.book_photo:
             raise forms.ValidationError('Please upload a photo of the book.')
         return photo
 

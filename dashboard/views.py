@@ -10,6 +10,7 @@ from notifications.utils import create_notification
 from .models import Complaint, AuditLog
 from .decorators import admin_required
 from .models import Complaint, AuditLog, UserComplaint
+from accounts.models import College, CollegeAdminInvite
 
 
 def log_action(admin, action, target_user=None, details=None):
@@ -272,3 +273,46 @@ def user_complaint_detail_view(request, complaint_id):
     return render(request, 'dashboard/user_complaint_detail.html', {
         'complaint': complaint,
     })
+
+
+@admin_required
+def colleges_view(request):
+    colleges = College.objects.all().order_by('name')
+    return render(request, 'dashboard/colleges.html', {'colleges': colleges})
+
+
+@admin_required
+def add_college_view(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        code = request.POST.get('code')
+        
+        if College.objects.filter(name__iexact=name).exists():
+            messages.error(request, 'A college with this name already exists.')
+        elif College.objects.filter(code__iexact=code).exists():
+            messages.error(request, 'A college with this code already exists.')
+        else:
+            College.objects.create(name=name, code=code.upper())
+            messages.success(request, f'College "{name}" added successfully.')
+        
+        return redirect('dashboard:colleges')
+    
+    return redirect('dashboard:colleges')
+
+
+@admin_required
+def generate_invite_view(request, college_id):
+    college = get_object_or_404(College, pk=college_id)
+    
+    invite, created = CollegeAdminInvite.objects.get_or_create(college=college)
+    
+    if not created and invite.is_used:
+        # regenerate token for reuse
+        invite.token = ''
+        invite.is_used = False
+        invite.used_at = None
+        invite.save()
+    
+    log_action(request.user, f'Generated admin invite for {college.name}', target_user=None)
+    messages.success(request, f'Invite link generated for {college.name}.')
+    return redirect('dashboard:colleges')

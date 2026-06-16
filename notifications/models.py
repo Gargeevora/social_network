@@ -14,6 +14,7 @@ class Notification(models.Model):
         ('representative_rejected', 'Representative Access Rejected'),
         ('like', 'Post Liked'),
         ('comment', 'Post Commented'),
+        ('other', 'Other'),
     ]
 
     recipient = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='notifications')

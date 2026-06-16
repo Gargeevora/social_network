@@ -88,9 +88,12 @@
                     {% endif %}
                     <div class="dropdown-divider"></div>
                     <a href="{% url 'accounts:report_issue' %}"><i class="fas fa-flag"></i> Report an Issue</a>
-                    <a href="{% url 'accounts:logout' %}" class="dropdown-logout">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a>
+                    <a href="{% url 'accounts:logout' %}" class="dropdown-logout" style="color: red;">
+    <i class="fas fa-sign-out-alt"></i> Logout
+</a>
+<a href="{% url 'accounts:delete_account' %}" class="dropdown-logout"style="color: red;">
+    <i class="fas fa-user-times"></i> Delete Account
+</a>
                 </div>
             </div>
 

@@ -14,4 +14,6 @@ urlpatterns = [
     path('edit-profile/', views.edit_profile_view, name='edit_profile'),
     path('report/', views.report_issue_view, name='report_issue'),
     path('resend-verification/', views.resend_verification_email_view, name='resend_verification'),
+    path('delete-account/', views.delete_account_view, name='delete_account'),
+    path('college-admin-register/<str:token>/', views.college_admin_register_view, name='college_admin_register'),
 ]

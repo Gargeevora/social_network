@@ -358,6 +358,9 @@
             </a>
 
             <div class="nav-section">Management</div>
+            <a href="{% url 'dashboard:colleges' %}" class="{% if request.resolver_match.url_name == 'colleges' %}active{% endif %}">
+    <i class="fas fa-university"></i> Colleges
+</a>
             <a href="{% url 'dashboard:users' %}" class="{% if request.resolver_match.url_name == 'users' %}active{% endif %}">
                 <i class="fas fa-users"></i> Users
             </a>

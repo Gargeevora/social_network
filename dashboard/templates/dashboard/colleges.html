@@ -1,0 +1,97 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block title %}Colleges{% endblock %}
+{% block page_title %}College Management{% endblock %}
+
+{% block content %}
+
+<!-- Add College -->
+<div class="dash-table-card">
+    <div class="dash-table-header">
+        <h3>Add New College</h3>
+    </div>
+    <div style="padding:1.5rem;">
+        <form method="POST" action="{% url 'dashboard:add_college' %}" style="display:flex; gap:1rem; flex-wrap:wrap; align-items:flex-end;">
+            {% csrf_token %}
+            <div>
+                <label style="font-size:0.85rem; font-weight:600; color:var(--navy); display:block; margin-bottom:0.4rem;">College Name</label>
+                <input type="text" name="name" placeholder="e.g. GSET Surat" required
+                    style="padding:0.6rem 1rem; border:1.5px solid var(--grey); border-radius:8px; font-size:0.9rem; min-width:250px;">
+            </div>
+            <div>
+                <label style="font-size:0.85rem; font-weight:600; color:var(--navy); display:block; margin-bottom:0.4rem;">College Code</label>
+                <input type="text" name="code" placeholder="e.g. GSET" required
+                    style="padding:0.6rem 1rem; border:1.5px solid var(--grey); border-radius:8px; font-size:0.9rem; width:150px;">
+            </div>
+            <button type="submit" class="btn-sm btn-sm-success" style="padding:0.6rem 1.5rem; font-size:0.9rem;">
+                <i class="fas fa-plus"></i> Add College
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Colleges List -->
+<div class="dash-table-card">
+    <div class="dash-table-header">
+        <h3>All Colleges</h3>
+        <span style="font-size:0.85rem; color:var(--grey-text);">{{ colleges.count }} total</span>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Code</th>
+                <th>Admin Status</th>
+                <th>Invite Link</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for college in colleges %}
+            <tr>
+                <td>{{ college.name }}</td>
+                <td>{{ college.code }}</td>
+                <td>
+                    {% if college.admin_invite %}
+                        {% if college.admin_invite.is_used %}
+                        <span class="badge badge-success">Admin Registered</span>
+                        {% else %}
+                        <span class="badge badge-warning">Invite Pending</span>
+                        {% endif %}
+                    {% else %}
+                    <span class="badge badge-error">No Invite Generated</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if college.admin_invite and not college.admin_invite.is_used %}
+                    <code style="font-size:0.75rem; word-break:break-all; color:var(--accent);">
+                        {{ request.scheme }}://{{ request.get_host }}{% url 'accounts:college_admin_register' college.admin_invite.token %}
+                    </code>
+                    {% elif college.admin_invite and college.admin_invite.is_used %}
+                    <span style="color:var(--grey-text); font-size:0.8rem;">Already used</span>
+                    {% else %}
+                    <span style="color:var(--grey-text); font-size:0.8rem;">—</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if not college.admin_invite or college.admin_invite.is_used %}
+                    <a href="{% url 'dashboard:generate_invite' college.pk %}"
+                       class="btn-sm btn-sm-info"
+                       onclick="return confirm('Generate a new admin invite link for {{ college.name }}?')">
+                        <i class="fas fa-link"></i> Generate Invite
+                    </a>
+                    {% else %}
+                    <span style="color:var(--grey-text); font-size:0.8rem;">Invite active</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align:center; color:var(--grey-text);">No colleges added yet</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

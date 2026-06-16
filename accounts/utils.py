@@ -14,7 +14,14 @@ def send_verification_email(request, user):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     verification_link = f"https://social-network-p1mg.onrender.com/accounts/verify-email/{uid}/{token}/"
 
-    message = render_to_string('accounts/verification_email.html', {
+    if user.is_college_admin:
+        subject = f"Verify your College Admin account — {user.college.name}"
+        template = 'accounts/college_admin_verification_email.html'
+    else:
+        subject = "Verify your Social Network email"
+        template = 'accounts/verification_email.html'
+
+    message = render_to_string(template, {
         'user': user,
         'verification_link': verification_link,
     })
@@ -27,7 +34,7 @@ def send_verification_email(request, user):
     send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
         to=[{"email": user.email, "name": user.student_name}],
         sender={"email": os.getenv('EMAIL_HOST_USER'), "name": "Social Network"},
-        subject="Verify your Social Network email",
+        subject=subject,
         html_content=message
     )
 

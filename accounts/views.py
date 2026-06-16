@@ -10,7 +10,14 @@ from .utils import send_verification_email, send_login_alert_email
 from .tokens import email_verification_token
 from posts.models import Post
 from connections.models import Connection
-
+import cloudinary.uploader
+from django.contrib.auth import update_session_auth_hash
+from books.models import Book, PurchaseRequest
+from events.models import Event, EventInterest
+from .models import College, CollegeAdminInvite
+from django.utils import timezone
+from django.conf import settings
+from .forms import CollegeAdminRegisterForm
 
 def register_view(request):
     if request.user.is_authenticated:
@@ -196,3 +203,124 @@ def resend_verification_email_view(request):
         return redirect('accounts:resend_verification')
     
     return render(request, 'accounts/resend_verification.html')
+
+
+
+@login_required
+def delete_account_view(request):
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        
+        if not request.user.check_password(password):
+            messages.error(request, 'Incorrect password. Account not deleted.')
+            return redirect('accounts:delete_account')
+        
+        user = request.user
+        
+        # Notify buyers whose purchase requests were approved by this seller
+        approved_requests = PurchaseRequest.objects.filter(
+            book__seller=user, status='approved'
+        ).select_related('buyer', 'book')
+        
+        for req in approved_requests:
+            create_notification(
+                recipient=req.buyer,
+                sender=None,
+                notification_type='other',
+                message=f'The account of the seller for "{req.book.book_name}" no longer exists.',
+                link='/books/'
+            )
+        
+        # Notify interested users about organizer's events being removed
+        organized_events = Event.objects.filter(organizer=user)
+        for event in organized_events:
+            interested = EventInterest.objects.filter(event=event).select_related('user')
+            for interest in interested:
+                create_notification(
+                    recipient=interest.user,
+                    sender=None,
+                    notification_type='other',
+                    message=f'The organizer account for "{event.event_name}" no longer exists. The event has been removed.',
+                    link='/events/'
+                )
+        
+        # Delete Cloudinary images
+        for field_name in ['profile_photo', 'cover_photo', 'id_card_photo']:
+            field = getattr(user, field_name, None)
+            if field:
+                try:
+                    cloudinary.uploader.destroy(field.name)
+                except Exception:
+                    pass
+        
+        for post in user.posts.all():
+            if post.image:
+                try:
+                    cloudinary.uploader.destroy(post.image.name)
+                except Exception:
+                    pass
+        
+        for book in user.books_selling.all():
+            if book.book_photo:
+                try:
+                    cloudinary.uploader.destroy(book.book_photo.name)
+                except Exception:
+                    pass
+        
+        for event in organized_events:
+            if event.cover_image:
+                try:
+                    cloudinary.uploader.destroy(event.cover_image.name)
+                except Exception:
+                    pass
+        
+        logout(request)
+        user.delete()
+        
+        messages.success(request, 'Your account and all associated data have been permanently deleted.')
+        return redirect('home')
+    
+    return render(request, 'accounts/delete_account.html')
+
+def college_admin_register_view(request, token):
+    try:
+        invite = CollegeAdminInvite.objects.get(token=token, is_used=False)
+    except CollegeAdminInvite.DoesNotExist:
+        ip = request.META.get('REMOTE_ADDR', 'Unknown')
+        from django.core.mail import send_mail
+        send_mail(
+            subject='Suspicious access to college admin registration',
+            message=f'Someone tried to access an invalid/used admin invite link.\n\nToken: {token}\nIP Address: {ip}\nTime: {timezone.now()}',
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[settings.ADMIN_EMAIL],
+            fail_silently=True,
+        )
+        messages.error(request, 'This invite link is invalid or has already been used.')
+        return redirect('home')
+
+    if request.method == 'POST':
+        form = CollegeAdminRegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_email_verified = False
+            user.is_college_admin = True
+            user.college = invite.college
+            user.college_name = invite.college.name
+            user.branch = 'Administration'
+            user.year = 0
+            user.save()
+
+            invite.is_used = True
+            invite.used_at = timezone.now()
+            invite.save()
+
+            send_verification_email(request, user)
+            messages.success(request, f'Registration successful for {invite.college.name} admin account. Please verify your email.')
+            return redirect('accounts:verify_email')
+    else:
+        form = CollegeAdminRegisterForm()
+
+    return render(request, 'accounts/college_admin_register.html', {
+        'form': form,
+        'college': invite.college,
+    })

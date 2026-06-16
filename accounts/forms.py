@@ -70,3 +70,23 @@ class EditProfileForm(forms.ModelForm):
             ]),
             'address': forms.Textarea(attrs={'rows': 3}),
         }
+
+
+class CollegeAdminRegisterForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+    student_name = forms.CharField(max_length=100, label='Full Name')
+    city = forms.CharField(max_length=100)
+    address = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}))
+    phone_number = forms.CharField(max_length=15)
+
+    class Meta:
+        model = CustomUser
+        fields = [
+            'email',
+            'student_name',
+            'city',
+            'address',
+            'phone_number',
+            'password1',
+            'password2',
+        ]

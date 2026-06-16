@@ -11,6 +11,7 @@ from .models import Complaint, AuditLog
 from .decorators import admin_required
 from .models import Complaint, AuditLog, UserComplaint
 from accounts.models import College, CollegeAdminInvite
+from .decorators import college_admin_required
 
 
 def log_action(admin, action, target_user=None, details=None):
@@ -316,3 +317,20 @@ def generate_invite_view(request, college_id):
     log_action(request.user, f'Generated admin invite for {college.name}', target_user=None)
     messages.success(request, f'Invite link generated for {college.name}.')
     return redirect('dashboard:colleges')
+
+
+
+@college_admin_required
+def college_admin_home_view(request):
+    college = request.user.college
+    
+    total_students = CustomUser.objects.filter(college=college, is_college_admin=False).count()
+    pending_complaints = UserComplaint.objects.filter(user__college=college, status='pending').count()
+    pending_rep_requests = RepresentativeRequest.objects.filter(user__college=college, status='pending').count()
+    
+    return render(request, 'dashboard/college_admin_home.html', {
+        'college': college,
+        'total_students': total_students,
+        'pending_complaints': pending_complaints,
+        'pending_rep_requests': pending_rep_requests,
+    })

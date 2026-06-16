@@ -1,0 +1,42 @@
+{% extends 'dashboard/base_college_admin.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<h1 style="color:var(--navy); margin-bottom:0.3rem;">{{ college.name }} Admin Dashboard</h1>
+<p style="color:var(--grey-text); margin-bottom:2rem;">Manage students and requests for {{ college.name }}</p>
+
+<div class="dash-stats-grid">
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon" style="background:#e8f0fe;">
+            <i class="fas fa-user-graduate" style="color:#4f8ef7;"></i>
+        </div>
+        <div class="dash-stat-info">
+            <h3>{{ total_students }}</h3>
+            <p>Students from {{ college.name }}</p>
+        </div>
+    </div>
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon" style="background:#f8d7da;">
+            <i class="fas fa-exclamation-circle" style="color:#dc3545;"></i>
+        </div>
+        <div class="dash-stat-info">
+            <h3>{{ pending_complaints }}</h3>
+            <p>Pending Complaints</p>
+        </div>
+    </div>
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon" style="background:#d1ecf1;">
+            <i class="fas fa-certificate" style="color:#17a2b8;"></i>
+        </div>
+        <div class="dash-stat-info">
+            <h3>{{ pending_rep_requests }}</h3>
+            <p>Pending Rep Requests</p>
+        </div>
+    </div>
+</div>
+
+<p style="color:var(--grey-text); font-size:0.9rem;">Student verification and complaint management features are coming soon to this dashboard.</p>
+
+{% endblock %}

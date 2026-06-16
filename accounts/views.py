@@ -65,6 +65,8 @@ def login_view(request):
                 request.session['login_attempts'] = 0
                 login(request, user)
                 send_login_alert_email(user)
+                if user.is_college_admin:
+                    return redirect('dashboard:college_admin_home')
                 return redirect('home')
 
         request.session['login_attempts'] = attempts + 1

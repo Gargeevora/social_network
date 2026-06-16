@@ -19,6 +19,7 @@ urlpatterns = [
     path('user-complaints/<int:complaint_id>/resolve/', views.resolve_user_complaint_view, name='resolve_user_complaint'),
     path('user-complaints/<int:complaint_id>/', views.user_complaint_detail_view, name='user_complaint_detail'),
     path('colleges/', views.colleges_view, name='colleges'),
-path('colleges/add/', views.add_college_view, name='add_college'),
-path('colleges/<int:college_id>/generate-invite/', views.generate_invite_view, name='generate_invite'),
+    path('colleges/add/', views.add_college_view, name='add_college'),
+    path('colleges/<int:college_id>/generate-invite/', views.generate_invite_view, name='generate_invite'),
+    path('college-admin/', views.college_admin_home_view, name='college_admin_home'),
 ]

@@ -1,12 +1,17 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import CustomUser
-
+from .models import College
 
 class RegisterForm(UserCreationForm):
     email = forms.EmailField(required=True)
     student_name = forms.CharField(max_length=100)
-    college_name = forms.CharField(max_length=200)
+    college = forms.ModelChoiceField(
+    queryset=College.objects.filter(is_active=True),
+    label='Select Your College',
+    empty_label='-- Select your college --',
+    help_text='⚠ This cannot be changed after registration.'
+)
     branch = forms.CharField(max_length=100)
     phone_number = forms.CharField(max_length=15)
     year = forms.ChoiceField(choices=[
@@ -24,7 +29,7 @@ class RegisterForm(UserCreationForm):
         fields = [
             'email',
             'student_name',
-            'college_name',
+            'college',
             'branch',
             'year',
             'city',

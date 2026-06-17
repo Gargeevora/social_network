@@ -18,6 +18,7 @@ from .models import College, CollegeAdminInvite
 from django.utils import timezone
 from django.conf import settings
 from .forms import CollegeAdminRegisterForm
+from notifications.utils import create_notification
 
 def register_view(request):
     if request.user.is_authenticated:
@@ -33,6 +34,8 @@ def register_view(request):
             
             user = form.save(commit=False)
             user.is_email_verified = False
+            user.college = user.college     
+            user.college_locked = True
             user.save()
             send_verification_email(request, user)
             messages.success(request, 'Registration successful. Please check your email to verify your account.')
@@ -310,6 +313,7 @@ def college_admin_register_view(request, token):
             user.college_name = invite.college.name
             user.branch = 'Administration'
             user.year = 0
+            user.college_locked = True
             user.save()
 
             invite.is_used = True

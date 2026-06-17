@@ -1,78 +1,170 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}College Admin{% endblock %} - Social Network</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --navy: #1a2744; --navy-light: #243156; --white: #ffffff;
-            --grey-light: #f4f6fb; --grey: #e0e4ef; --grey-text: #8892a4;
-            --accent: #4f8ef7; --success: #28a745; --error: #dc3545; --warning: #ffc107;
-        }
-        body { font-family: 'Inter', sans-serif; background: var(--grey-light); }
-        .ca-navbar { background: var(--navy); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        .ca-navbar h2 { color: var(--white); font-size: 1.1rem; }
-        .ca-navbar h2 span { color: var(--accent); }
-        .ca-badge { background: var(--accent); color: var(--white); font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.7rem; border-radius: 20px; margin-left: 0.6rem; text-transform: uppercase; }
-        .ca-navbar a { color: var(--grey); text-decoration: none; font-size: 0.9rem; margin-left: 1.2rem; }
-        .ca-navbar a:hover { color: var(--white); }
-        .ca-content { max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; }
-        .dash-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; margin-bottom: 2rem; }
-        .dash-stat-card { background: var(--white); border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 10px rgba(26,39,68,0.07); display: flex; align-items: center; gap: 1rem; }
-        .dash-stat-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
-        .dash-stat-info h3 { font-size: 1.6rem; font-weight: 800; color: var(--navy); }
-        .dash-stat-info p { font-size: 0.8rem; color: var(--grey-text); }
-        .ca-messages { margin-bottom: 1rem; }
-        .ca-message { padding: 0.8rem 1.2rem; border-radius: 8px; margin-bottom: 0.5rem; font-size: 0.9rem; }
-        .ca-message.success { background: #d4edda; color: #155724; }
-        .ca-message.error { background: #f8d7da; color: #721c24; }
-
-        @media (max-width: 768px) {
-    .ca-navbar {
-        flex-direction: column;
-        gap: 0.8rem;
-        padding: 1rem;
-        text-align: center;
-    }
-    .ca-navbar a {
-        margin-left: 0.8rem;
-    }
-    .ca-content {
-        padding: 0 1rem;
-        margin: 1.5rem auto;
-    }
-    .dash-stats-grid {
-        grid-template-columns: 1fr;
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --navy: #1a2744;
+        --navy-light: #243156;
+        --white: #ffffff;
+        --grey-light: #f4f6fb;
+        --grey: #e0e4ef;
+        --grey-text: #8892a4;
+        --accent: #4f8ef7;
+        --success: #28a745;
+        --error: #dc3545;
+        --warning: #ffc107;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--grey-light);
+      }
+      .ca-navbar {
+        background: var(--navy);
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .ca-navbar h2 {
+        color: var(--white);
+        font-size: 1.1rem;
+      }
+      .ca-navbar h2 span {
+        color: var(--accent);
+      }
+      .ca-badge {
+        background: white;
+        color: white;
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 0.2rem 0.7rem;
+        border-radius: 20px;
+        margin-left: 0.6rem;
+        text-transform: uppercase;
+      }
+      .ca-navbar a {
+        color: var(--grey);
+        text-decoration: none;
+        font-size: 0.9rem;
+        margin-left: 1.2rem;
+      }
+      .ca-navbar a:hover {
+        color: var(--white);
+      }
+      .ca-content {
+        max-width: 1100px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+      }
+      .dash-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.2rem;
+        margin-bottom: 2rem;
+      }
+      .dash-stat-card {
+        background: var(--white);
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(26, 39, 68, 0.07);
+        display: flex;
+        align-items: center;
         gap: 1rem;
-    }
-}
-    </style>
-</head>
-<body>
+      }
+      .dash-stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+      }
+      .dash-stat-info h3 {
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: var(--navy);
+      }
+      .dash-stat-info p {
+        font-size: 0.8rem;
+        color: var(--grey-text);
+      }
+      .ca-messages {
+        margin-bottom: 1rem;
+      }
+      .ca-message {
+        padding: 0.8rem 1.2rem;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+      }
+      .ca-message.success {
+        background: #d4edda;
+        color: #155724;
+      }
+      .ca-message.error {
+        background: #f8d7da;
+        color: #721c24;
+      }
 
+      @media (max-width: 768px) {
+        .ca-navbar {
+          flex-direction: column;
+          gap: 0.8rem;
+          padding: 1rem;
+          text-align: center;
+        }
+        .ca-navbar a {
+          margin-left: 0.8rem;
+        }
+        .ca-content {
+          padding: 0 1rem;
+          margin: 1.5rem auto;
+        }
+        .dash-stats-grid {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
     <nav class="ca-navbar">
-        <h2><i class="fas fa-graduation-cap"></i> <span>Social</span> Network <span class="ca-badge">College Admin</span></h2>
-        <div>
-            <a href="{% url 'posts:feed' %}">View Website</a>
-            <a href="{% url 'accounts:logout' %}">Logout</a>
-        </div>
+      <h2>
+        <i class="fas fa-graduation-cap"></i> <span>Social</span> Network
+        <span class="ca-badge">College Admin</span>
+      </h2>
+      <div>
+        <a href="{% url 'posts:feed' %}">View Website</a>
+        <a href="{% url 'accounts:logout' %}" style="color: red">Logout </a>
+      </div>
     </nav>
 
     <div class="ca-content">
-        {% if messages %}
-        <div class="ca-messages">
-            {% for message in messages %}
-            <div class="ca-message {{ message.tags }}">{{ message }}</div>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        {% block content %}{% endblock %}
+      {% if messages %}
+      <div class="ca-messages">
+        {% for message in messages %}
+        <div class="ca-message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %} {% block content %}{% endblock %}
     </div>
-
-</body>
+  </body>
 </html>

@@ -43,19 +43,20 @@
 
         <div class="form-row">
             <div class="form-group">
-                <label for="id_college_name">College Name</label>
-                <input 
-                    type="text" 
-                    name="college_name" 
-                    id="id_college_name"
-                    placeholder="Your college name"
-                    value="{{ form.college_name.value|default:'' }}"
-                    required
-                >
-                {% if form.college_name.errors %}
-                <span class="field-error">{{ form.college_name.errors.0 }}</span>
-                {% endif %}
-            </div>
+    <label for="id_college">Select Your College</label>
+    <select name="college" id="id_college" required>
+        <option value="">-- Select your college --</option>
+        {% for college in form.college.field.queryset %}
+        <option value="{{ college.pk }}" {% if form.college.value == college.pk|stringformat:"s" %}selected{% endif %}>{{ college.name }}</option>
+        {% endfor %}
+    </select>
+    <small class="field-hint" style="color:var(--error); font-weight:600;">
+        <i class="fas fa-exclamation-triangle"></i> This cannot be changed after registration. Choose carefully.
+    </small>
+    {% if form.college.errors %}
+    <span class="field-error">{{ form.college.errors.0 }}</span>
+    {% endif %}
+</div>
 
             <div class="form-group">
                 <label for="id_branch">Branch</label>

@@ -34,6 +34,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     cover_photo = models.ImageField(upload_to='cover_photos/', blank=True, null=True)
     is_college_admin = models.BooleanField(default=False)
     college = models.ForeignKey('College', on_delete=models.SET_NULL, null=True, blank=True, related_name='members')
+    is_college_verified = models.BooleanField(default=False)
+    college_locked = models.BooleanField(default=False)
     
     # Profile fields
     student_name = models.CharField(max_length=100)

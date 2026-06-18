@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from .models import Book, PurchaseRequest
 from .forms import SellBookForm, PurchaseRequestForm
-
+from accounts.decorators import verified_student_required
 
 def book_list_view(request):
     query = request.GET.get('q', '')
@@ -41,6 +41,7 @@ def book_detail_view(request, pk):
 
 
 @login_required
+@verified_student_required
 def send_purchase_request_view(request, pk):
     book = get_object_or_404(Book, pk=pk)
     
@@ -101,6 +102,7 @@ def send_purchase_request_view(request, pk):
 
 
 @login_required
+@verified_student_required
 def sell_book_view(request):
     if request.method == 'POST':
         form = SellBookForm(request.POST, request.FILES)
@@ -127,6 +129,7 @@ def sell_book_view(request):
 
 
 @login_required
+@verified_student_required
 def approve_request_view(request, request_id):
     purchase_request = get_object_or_404(PurchaseRequest, pk=request_id)
     
@@ -191,6 +194,7 @@ def approve_request_view(request, request_id):
 
 
 @login_required
+@verified_student_required
 def reject_request_view(request, request_id):
     purchase_request = get_object_or_404(PurchaseRequest, pk=request_id)
     
@@ -226,6 +230,7 @@ def reject_request_view(request, request_id):
 
 
 @login_required
+@verified_student_required
 def my_books_view(request):
     my_listings = Book.objects.filter(seller=request.user).order_by('-created_at')
     incoming_requests = PurchaseRequest.objects.filter(
@@ -246,6 +251,7 @@ def my_books_view(request):
     })
 
 @login_required
+@verified_student_required
 def delete_book_view(request, pk):
     book = get_object_or_404(Book, pk=pk, seller=request.user)
     book.delete()
@@ -253,6 +259,7 @@ def delete_book_view(request, pk):
     return redirect('books:my_books')
 
 @login_required
+@verified_student_required
 def edit_book_view(request, pk):
     book = get_object_or_404(Book, pk=pk, seller=request.user)
     

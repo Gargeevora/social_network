@@ -1,0 +1,62 @@
+{% extends 'dashboard/base_college_admin.html' %}
+
+{% block title %}Pending Verifications{% endblock %}
+
+{% block content %}
+
+<a href="{% url 'dashboard:college_admin_home' %}" style="color:var(--accent); text-decoration:none; font-size:0.9rem;">
+    <i class="fas fa-arrow-left"></i> Back to Dashboard
+</a>
+
+<h1 style="color:var(--navy); margin:1rem 0 0.3rem;">Pending Student Verifications</h1>
+<p style="color:var(--grey-text); margin-bottom:2rem;">Review ID cards of students from {{ college.name }}</p>
+
+{% if pending_students %}
+<div style="display:flex; flex-direction:column; gap:1.2rem;">
+    {% for student in pending_students %}
+    <div style="background:var(--white); border-radius:12px; padding:1.5rem; box-shadow:0 2px 10px rgba(26,39,68,0.07); display:flex; gap:1.5rem; align-items:flex-start; flex-wrap:wrap;">
+        
+        <div style="flex-shrink:0;">
+            {% if student.id_card_photo %}
+            <img src="{{ student.id_card_photo.url }}" alt="ID Card" style="width:180px; border-radius:8px; border:1px solid var(--grey); object-fit:cover;">
+            {% else %}
+            <div style="width:180px; height:120px; background:var(--grey-light); border-radius:8px; display:flex; align-items:center; justify-content:center; color:var(--grey-text);">
+                No ID uploaded
+            </div>
+            {% endif %}
+        </div>
+
+        <div style="flex:1; min-width:200px;">
+            <h3 style="color:var(--navy); font-size:1.1rem; margin-bottom:0.5rem;">{{ student.student_name }}</h3>
+            <p style="color:var(--grey-text); font-size:0.88rem; margin-bottom:0.2rem;"><i class="fas fa-envelope"></i> {{ student.email }}</p>
+            <p style="color:var(--grey-text); font-size:0.88rem; margin-bottom:0.2rem;"><i class="fas fa-code-branch"></i> {{ student.branch }} — Year {{ student.year }}</p>
+            <p style="color:var(--grey-text); font-size:0.88rem; margin-bottom:0.2rem;"><i class="fas fa-map-marker-alt"></i> {{ student.city }}</p>
+            <p style="color:var(--grey-text); font-size:0.88rem; margin-bottom:1rem;"><i class="fas fa-clock"></i> Registered {{ student.date_joined|timesince }} ago</p>
+
+            <div style="display:flex; gap:0.8rem;">
+                <a href="{% url 'dashboard:approve_student' student.pk %}" 
+                   class="btn-sm btn-sm-success" 
+                   style="padding:0.5rem 1.2rem; font-size:0.85rem;"
+                   onclick="return confirm('Approve {{ student.student_name }} as a verified student of {{ college.name }}?')">
+                    <i class="fas fa-check"></i> Approve
+                </a>
+                <a href="{% url 'dashboard:reject_student' student.pk %}" 
+                   class="btn-sm btn-sm-danger" 
+                   style="padding:0.5rem 1.2rem; font-size:0.85rem;"
+                   onclick="return confirm('Reject this verification? The student will be asked to re-upload their ID.')">
+                    <i class="fas fa-times"></i> Reject
+                </a>
+            </div>
+        </div>
+
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div style="text-align:center; padding:3rem; color:var(--grey-text);">
+    <i class="fas fa-check-circle" style="font-size:3rem; margin-bottom:1rem; display:block;"></i>
+    <p>No pending verifications right now.</p>
+</div>
+{% endif %}
+
+{% endblock %}

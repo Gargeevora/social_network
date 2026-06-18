@@ -22,4 +22,7 @@ urlpatterns = [
     path('colleges/add/', views.add_college_view, name='add_college'),
     path('colleges/<int:college_id>/generate-invite/', views.generate_invite_view, name='generate_invite'),
     path('college-admin/', views.college_admin_home_view, name='college_admin_home'),
+    path('college-admin/pending-verifications/', views.pending_verifications_view, name='pending_verifications'),
+path('college-admin/verify/<int:user_id>/', views.approve_student_view, name='approve_student'),
+path('college-admin/reject/<int:user_id>/', views.reject_student_view, name='reject_student'),
 ]

@@ -11,6 +11,7 @@ from accounts.models import CustomUser
 from events.models import Event
 from django.utils import timezone
 from django.db.models import Case, When, IntegerField, Value
+from accounts.decorators import verified_student_required
 
 def feed_view(request):
     friend_ids = []
@@ -54,6 +55,7 @@ def feed_view(request):
     })
 
 @login_required
+@verified_student_required
 def create_post_view(request):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)

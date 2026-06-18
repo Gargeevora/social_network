@@ -5,9 +5,10 @@ from django.contrib import messages
 from django.http import JsonResponse
 from .models import Connection
 from accounts.models import CustomUser
-
+from accounts.decorators import verified_student_required
 
 @login_required
+@verified_student_required
 def send_request_view(request, user_id):
     receiver = get_object_or_404(CustomUser, pk=user_id)
 
@@ -48,6 +49,7 @@ def send_request_view(request, user_id):
 
 
 @login_required
+@verified_student_required
 def accept_request_view(request, request_id):
     connection = get_object_or_404(Connection, pk=request_id, receiver=request.user)
     connection.status = 'accepted'

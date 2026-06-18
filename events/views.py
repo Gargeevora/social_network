@@ -8,7 +8,7 @@ from .models import Event, RepresentativeRequest
 from .forms import EventForm, RepresentativeRequestForm
 from .models import Event, RepresentativeRequest, EventInterest
 from notifications.utils import create_notification
-
+from accounts.decorators import verified_student_required
 
 def event_list_view(request):
     query = request.GET.get('q', '')
@@ -37,6 +37,7 @@ def event_detail_view(request, pk):
     })
 
 @login_required
+@verified_student_required
 def announce_event_view(request):
     # check if user is college representative
     if not request.user.is_college_representative:
@@ -63,6 +64,7 @@ def announce_event_view(request):
 
 
 @login_required
+@verified_student_required
 def request_representative_view(request):
     # check if already requested
     if RepresentativeRequest.objects.filter(user=request.user).exists():

@@ -327,10 +327,62 @@ def college_admin_home_view(request):
     total_students = CustomUser.objects.filter(college=college, is_college_admin=False).count()
     pending_complaints = UserComplaint.objects.filter(user__college=college, status='pending').count()
     pending_rep_requests = RepresentativeRequest.objects.filter(user__college=college, status='pending').count()
-    
+    pending_rep_requests = RepresentativeRequest.objects.filter(user__college=college, status='pending').count()
+
     return render(request, 'dashboard/college_admin_home.html', {
         'college': college,
         'total_students': total_students,
         'pending_complaints': pending_complaints,
         'pending_rep_requests': pending_rep_requests,
+        'pending_rep_requests': pending_rep_requests,
     })
+
+@college_admin_required
+def pending_verifications_view(request):
+    college = request.user.college
+    pending_students = CustomUser.objects.filter(
+        college=college,
+        is_college_admin=False,
+        is_college_verified=False
+    ).order_by('-date_joined')
+
+    return render(request, 'dashboard/pending_verifications.html', {
+        'pending_students': pending_students,
+        'college': college,
+    })
+
+
+@college_admin_required
+def approve_student_view(request, user_id):
+    student = get_object_or_404(CustomUser, pk=user_id, college=request.user.college, is_college_admin=False)
+    student.is_college_verified = True
+    student.save()
+
+    create_notification(
+        recipient=student,
+        sender=request.user,
+        notification_type='other',
+        message=f'Your college admin has verified your profile. You now have full access to all features.',
+        link='/posts/'
+    )
+
+    log_action(request.user, f'Verified student {student.student_name}', target_user=student)
+    messages.success(request, f'{student.student_name} has been verified.')
+    return redirect('dashboard:pending_verifications')
+
+
+@college_admin_required
+def reject_student_view(request, user_id):
+    student = get_object_or_404(CustomUser, pk=user_id, college=request.user.college, is_college_admin=False)
+
+    create_notification(
+        recipient=student,
+        sender=request.user,
+        notification_type='other',
+        message=f'Your college admin could not verify your profile. Please re-upload a clear ID card photo via your profile edit page.',
+        link='/accounts/edit-profile/'
+    )
+
+    log_action(request.user, f'Rejected verification for {student.student_name}', target_user=student)
+    messages.success(request, f'{student.student_name} verification rejected. They have been notified to re-upload their ID.')
+    return redirect('dashboard:pending_verifications')

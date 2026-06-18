@@ -16,6 +16,20 @@
             <h3>{{ total_students }}</h3>
             <p>Students from {{ college.name }}</p>
         </div>
+        <div style="margin-bottom:1.5rem;">
+    <a href="{% url 'dashboard:pending_verifications' %}" class="btn-sm btn-sm-info" style="padding:0.7rem 1.5rem; font-size:0.9rem;">
+        <i class="fas fa-user-check"></i> Review Pending Verifications
+    </a>
+</div>
+    <div class="dash-stat-card">
+    <div class="dash-stat-icon" style="background:#fff3cd;">
+        <i class="fas fa-user-clock" style="color:#ffc107;"></i>
+    </div>
+    <div class="dash-stat-info">
+        <h3>{{ pending_verifications_count }}</h3>
+        <p>Pending Verifications</p>
+    </div>
+</div>
     </div>
     <div class="dash-stat-card">
         <div class="dash-stat-icon" style="background:#f8d7da;">

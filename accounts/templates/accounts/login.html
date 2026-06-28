@@ -53,6 +53,9 @@
       <a href="{% url 'accounts:register' %}">Register here</a>
     </p>
   </div>
+  <div style="text-align:right; margin-top:-0.5rem; margin-bottom:1rem;">
+    <a href="{% url 'accounts:forgot_password' %}" style="font-size:0.85rem; color:var(--accent);">Forgot Password?</a>
+</div>
   <div class="form-footer">
     <p>Need to verify your email? <a href="{% url 'accounts:resend_verification' %}">Resend verification email</a></p>
 </div>

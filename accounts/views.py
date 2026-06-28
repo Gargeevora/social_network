@@ -19,6 +19,9 @@ from django.utils import timezone
 from django.conf import settings
 from .forms import CollegeAdminRegisterForm
 from notifications.utils import create_notification
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
 
 def register_view(request):
     if request.user.is_authenticated:
@@ -330,3 +333,70 @@ def college_admin_register_view(request, token):
         'form': form,
         'college': invite.college,
     })
+
+def forgot_password_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        try:
+            user = CustomUser.objects.get(email=email)
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            reset_link = f"https://social-network-p1mg.onrender.com/accounts/reset-password/{uid}/{token}/"
+            
+            message = render_to_string('accounts/password_reset_email.html', {
+                'user': user,
+                'reset_link': reset_link,
+            })
+            
+            configuration = sib_api_v3_sdk.Configuration()
+            configuration.api_key['api-key'] = os.getenv('BREVO_API_KEY')
+            api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
+            send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
+                to=[{"email": user.email, "name": user.student_name}],
+                sender={"email": os.getenv('EMAIL_HOST_USER'), "name": "Social Network"},
+                subject="Reset your Social Network password",
+                html_content=message
+            )
+            try:
+                api_instance.send_transac_email(send_smtp_email)
+            except ApiException as e:
+                print(f"Email sending failed: {e}")
+            
+            messages.success(request, 'Password reset link sent to your email.')
+            return redirect('accounts:forgot_password')
+        
+        except CustomUser.DoesNotExist:
+            messages.error(request, 'No account found with this email address.')
+    
+    return render(request, 'accounts/forgot_password.html')
+
+
+def reset_password_view(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = CustomUser.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+        user = None
+    
+    if user is None or not default_token_generator.check_token(user, token):
+        messages.error(request, 'This password reset link is invalid or has expired.')
+        return redirect('accounts:forgot_password')
+    
+    if request.method == 'POST':
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        
+        if password1 != password2:
+            messages.error(request, 'Passwords do not match.')
+            return render(request, 'accounts/reset_password.html', {'uidb64': uidb64, 'token': token})
+        
+        if len(password1) < 8:
+            messages.error(request, 'Password must be at least 8 characters.')
+            return render(request, 'accounts/reset_password.html', {'uidb64': uidb64, 'token': token})
+        
+        user.set_password(password1)
+        user.save()
+        messages.success(request, 'Password reset successfully. Please login with your new password.')
+        return redirect('accounts:login')
+    
+    return render(request, 'accounts/reset_password.html', {'uidb64': uidb64, 'token': token})
